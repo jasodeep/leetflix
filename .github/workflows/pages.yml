@@ -47,9 +47,9 @@ jobs:
     name: Build and publish
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment:
-      name: github-pages
-      url: ${{ steps.meta.outputs.url }}
+    # Do not use the reserved `github-pages` environment. GitHub locks that
+    # environment to its own deploy-pages action / allowed branches, which
+    # rejects a `main` → `release` publish with "branch is not allowed".
     permissions:
       contents: write
     steps:
