@@ -16,7 +16,7 @@ import { highlight } from "@/lib/code/highlight";
 import { resolveMarkers } from "@/lib/markers";
 import { getAllProblems, getCatalogItem, getProblem } from "@/lib/problems";
 import { absUrl, leetcodeUrl, site } from "@/lib/site";
-import { LANGUAGES, type Problem } from "@/lib/types";
+import { isProblemType, LANGUAGES, topicLabel, type Problem } from "@/lib/types";
 
 export const dynamicParams = false;
 
@@ -128,8 +128,16 @@ export default async function ProblemPage({ params }: PageProps<"/problems/[slug
             <div className="flex flex-wrap items-center gap-2">
               <DifficultyBadge difficulty={problem.difficulty} />
               {problem.topics.map((t) => (
-                <Link key={t} href={`/?topic=${encodeURIComponent(t)}`} className="rounded-full">
-                  <Chip>{t}</Chip>
+                <Link
+                  key={t}
+                  href={
+                    isProblemType(t)
+                      ? `/?type=${encodeURIComponent(t)}`
+                      : `/?method=${encodeURIComponent(t)}`
+                  }
+                  className="rounded-full"
+                >
+                  <Chip>{topicLabel(t)}</Chip>
                 </Link>
               ))}
             </div>

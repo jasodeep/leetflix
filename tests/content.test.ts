@@ -5,7 +5,7 @@ import { problems } from "@/content/problems";
 import { loadTraces, traceLoaders } from "@/content/traces";
 import { parseInputs, defaultRawInputs } from "@/lib/inputs";
 import { resolveMarkers } from "@/lib/markers";
-import { LANGUAGES } from "@/lib/types";
+import { isMethod, isProblemType, LANGUAGES } from "@/lib/types";
 import { MAX_STEPS } from "@/lib/viz/recorder";
 
 describe("catalog", () => {
@@ -26,6 +26,14 @@ describe("catalog", () => {
 
   it("tags every problem with at least one topic", () => {
     for (const c of catalog) expect(c.topics.length).toBeGreaterThan(0);
+  });
+
+  it("classifies every tag as a type or a method", () => {
+    for (const c of catalog) {
+      for (const t of c.topics) {
+        expect(isProblemType(t) || isMethod(t), `${c.slug} tag ${t}`).toBe(true);
+      }
+    }
   });
 });
 

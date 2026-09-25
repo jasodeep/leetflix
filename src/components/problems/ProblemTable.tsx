@@ -8,23 +8,24 @@ import { Kbd } from "@/components/ui/Badge";
 import {
   applyQuery,
   DEFAULT_QUERY,
+  difficultyStats,
   hasActiveFilter,
+  methodStats,
   paginate,
   readQuery,
+  typeStats,
   writeQuery,
   type Query,
   type SortKey,
-  type TopicStat,
 } from "@/lib/catalog-query";
 import { useUrlSearch } from "@/lib/hooks/useUrlSearch";
-import { DIFFICULTIES, type CatalogItem, type Difficulty, type Topic } from "@/lib/types";
+import { topicLabel, type CatalogItem } from "@/lib/types";
 import { clamp, cn } from "@/lib/utils";
 
 import { difficultyText, ProblemTableRow, ROW_GRID } from "./ProblemTableRow";
 
 interface ProblemTableProps {
   items: CatalogItem[];
-  topics: TopicStat[];
 }
 
 const spring = { type: "spring", stiffness: 500, damping: 40 } as const;
@@ -34,10 +35,12 @@ const spring = { type: "spring", stiffness: 500, damping: 40 } as const;
  * every view is shareable on a static host. Keyboard: `/` search, `j`/`k`
  * move, `Enter` open, `Esc` clear.
  */
-export function ProblemTable({ items, topics }: ProblemTableProps) {
+export function ProblemTable({ items }: ProblemTableProps) {
   const [params, setParams] = useUrlSearch();
-  const topicNames = useMemo(() => topics.map((t) => t.topic), [topics]);
-  const query = useMemo(() => readQuery(params, topicNames), [params, topicNames]);
+  const query = useMemo(() => readQuery(params), [params]);
+  const diffs = useMemo(() => difficultyStats(items), [items]);
+  const types = useMemo(() => typeStats(items), [items]);
+  const methods = useMemo(() => methodStats(items), [items]);
 
   const filtered = useMemo(() => applyQuery(items, query), [items, query]);
   const page = useMemo(() => paginate(filtered, query.page), [filtered, query.page]);
@@ -118,10 +121,10 @@ export function ProblemTable({ items, topics }: ProblemTableProps) {
               type="search"
               value={query.q}
               onChange={(e) => update({ q: e.target.value })}
-              placeholder="Search by number, title or topic"
+              placeholder="Search by number, title, type or method"
               spellCheck={false}
               autoComplete="off"
-              className="border-border bg-surface text-fg placeholder:text-fg-subtle focus:border-fg/60 focus:ring-fg/10 h-10 w-full rounded-md border pr-10 pl-9 text-sm transition-[border-color,box-shadow] outline-none focus:ring-4"
+              className="search-glow border-border bg-surface/80 text-fg placeholder:text-fg-subtle h-10 w-full rounded-md border pr-10 pl-9 text-sm backdrop-blur-sm transition-[border-color,box-shadow] outline-none"
               aria-label="Search problems"
             />
             <span className="absolute top-1/2 right-2 -translate-y-1/2">
@@ -142,12 +145,46 @@ export function ProblemTable({ items, topics }: ProblemTableProps) {
             </span>
           </label>
 
-          <DifficultySegment value={query.difficulty} onChange={(d) => update({ difficulty: d })} />
-
           <AvailableSwitch checked={query.available} onChange={(v) => update({ available: v })} />
         </div>
 
-        <TopicRail topics={topics} value={query.topic} onChange={(t) => update({ topic: t })} />
+        <FilterRail
+          label="Difficulty"
+          allLabel="All"
+          pillId="difficulty-pill"
+          value={query.difficulty}
+          onChange={(d) => update({ difficulty: d })}
+          options={diffs.map((s) => ({
+            id: s.difficulty,
+            label: s.difficulty,
+            count: s.total,
+            className: difficultyText[s.difficulty],
+          }))}
+        />
+        <FilterRail
+          label="Type"
+          allLabel="All types"
+          pillId="type-pill"
+          value={query.type}
+          onChange={(t) => update({ type: t })}
+          options={types.map((s) => ({
+            id: s.topic,
+            label: topicLabel(s.topic),
+            count: s.count,
+          }))}
+        />
+        <FilterRail
+          label="Method"
+          allLabel="All methods"
+          pillId="method-pill"
+          value={query.method}
+          onChange={(t) => update({ method: t })}
+          options={methods.map((s) => ({
+            id: s.topic,
+            label: topicLabel(s.topic),
+            count: s.count,
+          }))}
+        />
       </div>
 
       <div className="text-fg-subtle flex items-center justify-between font-mono text-xs">
@@ -179,13 +216,18 @@ export function ProblemTable({ items, topics }: ProblemTableProps) {
         role="table"
         aria-label="Problems"
         aria-rowcount={page.total}
-        className="rounded-card border-border bg-surface scroll-mt-20 border"
+        className="pointer-glow rounded-card border-border bg-surface/80 relative scroll-mt-20 border shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_24px_80px_-40px_rgba(229,9,20,0.35)] backdrop-blur-sm"
         onMouseLeave={() => setCursor(-1)}
+        onMouseMove={(e) => {
+          const r = e.currentTarget.getBoundingClientRect();
+          e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+          e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+        }}
       >
         {/* No overflow-hidden on the parent: it would trap the sticky header. */}
         <div
           role="rowgroup"
-          className="border-border bg-surface-2/80 supports-[backdrop-filter]:bg-surface-2/60 rounded-t-card sticky top-14 z-10 border-b backdrop-blur"
+          className="border-border bg-surface-2/80 supports-[backdrop-filter]:bg-surface-2/60 rounded-t-card sticky top-14 z-20 border-b backdrop-blur"
         >
           <div
             role="row"
@@ -207,8 +249,11 @@ export function ProblemTable({ items, topics }: ProblemTableProps) {
             />
             <SortHeader label="Title" sortKey="title" query={query} onSort={toggleSort} />
             <SortHeader label="Difficulty" sortKey="difficulty" query={query} onSort={toggleSort} />
-            <div role="columnheader" className="hidden md:block">
-              Topics
+            <div role="columnheader" className="hidden lg:block">
+              Type
+            </div>
+            <div role="columnheader" className="hidden lg:block">
+              Method
             </div>
             <div role="columnheader" className="hidden text-right sm:block">
               Solutions
@@ -216,7 +261,7 @@ export function ProblemTable({ items, topics }: ProblemTableProps) {
           </div>
         </div>
 
-        <div role="rowgroup" className="relative">
+        <div role="rowgroup" className="relative z-10">
           <AnimatePresence initial={false} mode="popLayout">
             {page.items.map((item, i) => (
               <ProblemTableRow
@@ -302,49 +347,6 @@ function SortHeader({
   );
 }
 
-function DifficultySegment({
-  value,
-  onChange,
-}: {
-  value: Difficulty | null;
-  onChange: (d: Difficulty | null) => void;
-}) {
-  return (
-    <div
-      role="radiogroup"
-      aria-label="Difficulty"
-      className="border-border bg-surface inline-flex h-10 items-center rounded-md border p-1"
-    >
-      {DIFFICULTIES.map((d) => {
-        const active = value === d;
-        return (
-          <button
-            key={d}
-            type="button"
-            role="radio"
-            aria-checked={active}
-            onClick={() => onChange(active ? null : d)}
-            className={cn(
-              "relative h-full rounded px-3 text-xs font-medium transition-colors",
-              active ? difficultyText[d] : "text-fg-muted hover:text-fg",
-            )}
-          >
-            {active && (
-              <motion.span
-                layoutId="difficulty-pill"
-                className="bg-surface-3 border-border-strong absolute inset-0 rounded border"
-                transition={spring}
-                aria-hidden
-              />
-            )}
-            <span className="relative">{d}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 function AvailableSwitch({
   checked,
   onChange,
@@ -384,69 +386,86 @@ function AvailableSwitch({
   );
 }
 
-function TopicRail({
-  topics,
+function FilterRail<T extends string>({
+  label,
+  allLabel,
+  options,
   value,
   onChange,
+  pillId,
 }: {
-  topics: TopicStat[];
-  value: Topic | null;
-  onChange: (t: Topic | null) => void;
+  label: string;
+  allLabel: string;
+  options: { id: T; label: string; count: number; className?: string }[];
+  value: T | null;
+  onChange: (v: T | null) => void;
+  pillId: string;
 }) {
-  const chip = (active: boolean) =>
+  const chip = (active: boolean, extra?: string) =>
     cn(
       "relative shrink-0 rounded-full px-3 py-1 text-xs transition-colors",
-      active ? "text-bg" : "text-fg-muted hover:text-fg",
+      active
+        ? (extra ?? "text-bg")
+        : extra
+          ? cn(extra, "opacity-70 hover:opacity-100")
+          : "text-fg-muted hover:text-fg",
     );
   return (
-    <div
-      role="radiogroup"
-      aria-label="Topic"
-      className="mask-fade-x -mx-4 flex scrollbar-none gap-1.5 overflow-x-auto px-4 py-1 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
-    >
-      <button
-        type="button"
-        role="radio"
-        aria-checked={value === null}
-        onClick={() => onChange(null)}
-        className={chip(value === null)}
+    <div className="space-y-1.5">
+      <p className="text-fg-subtle font-mono text-[10px] tracking-wider uppercase">{label}</p>
+      <div
+        role="radiogroup"
+        aria-label={label}
+        className="mask-fade-x -mx-4 flex scrollbar-none gap-1.5 overflow-x-auto px-4 py-0.5 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
       >
-        {value === null && <TopicPill />}
-        <span className="relative">All topics</span>
-      </button>
-      {topics.map(({ topic, count }) => {
-        const active = value === topic;
-        return (
-          <button
-            key={topic}
-            type="button"
-            role="radio"
-            aria-checked={active}
-            onClick={() => onChange(active ? null : topic)}
-            className={chip(active)}
-          >
-            {active && <TopicPill />}
-            <span className="relative">
-              {topic}
-              <span
-                className={cn(
-                  "ml-1.5 font-mono text-[10px] tabular-nums",
-                  active ? "text-bg/70" : "text-fg-subtle",
-                )}
-              >
-                {count}
+        <motion.button
+          type="button"
+          role="radio"
+          aria-checked={value === null}
+          onClick={() => onChange(null)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.94 }}
+          className={chip(value === null)}
+        >
+          {value === null && <RailPill id={pillId} />}
+          <span className="relative">{allLabel}</span>
+        </motion.button>
+        {options.map((opt) => {
+          const active = value === opt.id;
+          return (
+            <motion.button
+              key={opt.id}
+              type="button"
+              role="radio"
+              aria-checked={active}
+              onClick={() => onChange(active ? null : opt.id)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.94 }}
+              className={chip(active, opt.className)}
+            >
+              {active && <RailPill id={pillId} />}
+              <span className="relative">
+                {opt.label}
+                <span
+                  className={cn(
+                    "ml-1.5 font-mono text-[10px] tabular-nums",
+                    active ? "text-current/70" : "text-fg-subtle",
+                  )}
+                >
+                  {opt.count}
+                </span>
               </span>
-            </span>
-          </button>
-        );
-      })}
+            </motion.button>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
-const TopicPill = () => (
+const RailPill = ({ id }: { id: string }) => (
   <motion.span
-    layoutId="topic-pill"
+    layoutId={id}
     className="bg-fg absolute inset-0 rounded-full"
     transition={spring}
     aria-hidden

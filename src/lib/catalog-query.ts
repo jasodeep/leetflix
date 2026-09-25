@@ -1,6 +1,9 @@
 import {
   DIFFICULTIES,
   difficultyRank,
+  isMethod,
+  isProblemType,
+  isTopic,
   type CatalogItem,
   type Difficulty,
   type Topic,
@@ -21,7 +24,8 @@ export const PAGE_SIZE = 50;
 export interface Query {
   q: string;
   difficulty: Difficulty | null;
-  topic: Topic | null;
+  type: Topic | null;
+  method: Topic | null;
   available: boolean;
   sort: SortKey;
   dir: SortDir;
@@ -31,22 +35,42 @@ export interface Query {
 export const DEFAULT_QUERY: Query = {
   q: "",
   difficulty: null,
-  topic: null,
+  type: null,
+  method: null,
   available: false,
   sort: "id",
   dir: "asc",
   page: 1,
 };
 
-export const readQuery = (p: URLSearchParams, topics: readonly Topic[]): Query => {
+/**
+ * `topic` is accepted as a legacy alias: a type tag becomes `type`, a method
+ * tag becomes `method`. New URLs write the split keys.
+ */
+export const readQuery = (p: URLSearchParams): Query => {
   const d = p.get("difficulty");
-  const t = p.get("topic");
+  const rawType = p.get("type");
+  const rawMethod = p.get("method");
+  const legacy = p.get("topic");
+  const type =
+    rawType && isTopic(rawType) && isProblemType(rawType)
+      ? rawType
+      : legacy && isTopic(legacy) && isProblemType(legacy)
+        ? legacy
+        : null;
+  const method =
+    rawMethod && isTopic(rawMethod) && isMethod(rawMethod)
+      ? rawMethod
+      : legacy && isTopic(legacy) && isMethod(legacy)
+        ? legacy
+        : null;
   const s = p.get("sort");
   const page = Number.parseInt(p.get("page") ?? "1", 10);
   return {
     q: p.get("q") ?? "",
     difficulty: DIFFICULTIES.includes(d as Difficulty) ? (d as Difficulty) : null,
-    topic: t && topics.includes(t as Topic) ? (t as Topic) : null,
+    type,
+    method,
     available: p.get("available") === "1",
     sort: SORT_KEYS.includes(s as SortKey) ? (s as SortKey) : "id",
     dir: p.get("dir") === "desc" ? "desc" : "asc",
@@ -59,7 +83,8 @@ export const writeQuery = (f: Query): URLSearchParams => {
   const p = new URLSearchParams();
   if (f.q) p.set("q", f.q);
   if (f.difficulty) p.set("difficulty", f.difficulty);
-  if (f.topic) p.set("topic", f.topic);
+  if (f.type) p.set("type", f.type);
+  if (f.method) p.set("method", f.method);
   if (f.available) p.set("available", "1");
   if (f.sort !== "id") p.set("sort", f.sort);
   if (f.dir !== "asc") p.set("dir", f.dir);
@@ -68,7 +93,7 @@ export const writeQuery = (f: Query): URLSearchParams => {
 };
 
 export const hasActiveFilter = (f: Query): boolean =>
-  Boolean(f.q || f.difficulty || f.topic || f.available);
+  Boolean(f.q || f.difficulty || f.type || f.method || f.available);
 
 /** Numeric needles match the problem number as a prefix; everything else is a substring search. */
 export const matchesSearch = (item: CatalogItem, q: string): boolean => {
@@ -94,7 +119,8 @@ export const applyQuery = (items: readonly CatalogItem[], f: Query): CatalogItem
   return items
     .filter((i) => matchesSearch(i, f.q))
     .filter((i) => !f.difficulty || i.difficulty === f.difficulty)
-    .filter((i) => !f.topic || i.topics.includes(f.topic))
+    .filter((i) => !f.type || i.topics.includes(f.type))
+    .filter((i) => !f.method || i.topics.includes(f.method))
     .filter((i) => !f.available || i.available)
     .sort((a, b) => sign * cmp(a, b));
 };
@@ -144,11 +170,21 @@ export interface TopicStat {
   count: number;
 }
 
-/** Topics by frequency, ties alphabetical — the order LeetCode's tag bar uses. */
-export const topicStats = (items: readonly CatalogItem[]): TopicStat[] => {
+const countTopics = (items: readonly CatalogItem[], pred: (t: Topic) => boolean): TopicStat[] => {
   const counts = new Map<Topic, number>();
-  for (const item of items) for (const t of item.topics) counts.set(t, (counts.get(t) ?? 0) + 1);
+  for (const item of items) {
+    for (const t of item.topics) {
+      if (!pred(t)) continue;
+      counts.set(t, (counts.get(t) ?? 0) + 1);
+    }
+  }
   return [...counts.entries()]
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
     .map(([topic, count]) => ({ topic, count }));
 };
+
+export const typeStats = (items: readonly CatalogItem[]): TopicStat[] =>
+  countTopics(items, isProblemType);
+
+export const methodStats = (items: readonly CatalogItem[]): TopicStat[] =>
+  countTopics(items, isMethod);

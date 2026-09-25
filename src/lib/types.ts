@@ -47,6 +47,112 @@ export type Topic =
   | "Sorting"
   | "Prefix Sum";
 
+/** What the problem is *about* — the input / data shape. */
+export const PROBLEM_TYPES = [
+  "Array",
+  "String",
+  "Matrix",
+  "Linked List",
+  "Stack",
+  "Heap",
+  "Tree",
+  "Binary Search Tree",
+  "Trie",
+  "Graph",
+  "Intervals",
+] as const satisfies readonly Topic[];
+
+/** How you solve it — the technique, as on LeetCode. */
+export const METHODS = [
+  "Hash Table",
+  "Two Pointers",
+  "Sliding Window",
+  "Prefix Sum",
+  "Sorting",
+  "Binary Search",
+  "Monotonic Stack",
+  "BFS",
+  "DFS",
+  "Backtracking",
+  "Recursion",
+  "Dynamic Programming",
+  "Greedy",
+  "Union Find",
+  "Topological Sort",
+  "Shortest Path",
+  "Divide and Conquer",
+  "Bit Manipulation",
+  "Math",
+  "Design",
+] as const satisfies readonly Topic[];
+
+const TYPE_SET = new Set<Topic>(PROBLEM_TYPES);
+const METHOD_SET = new Set<Topic>(METHODS);
+
+export const isProblemType = (t: Topic): boolean => TYPE_SET.has(t);
+export const isMethod = (t: Topic): boolean => METHOD_SET.has(t);
+export const isTopic = (s: string): s is Topic =>
+  TYPE_SET.has(s as Topic) || METHOD_SET.has(s as Topic);
+
+/** Chip labels — LeetCode names, shortened where the rail would wrap. */
+export const TOPIC_LABEL: Partial<Record<Topic, string>> = {
+  "Hash Table": "Hashing",
+  "Dynamic Programming": "DP",
+  "Binary Search Tree": "BST",
+  "Bit Manipulation": "Bitmask",
+  "Divide and Conquer": "D&C",
+  "Topological Sort": "Topo sort",
+  "Shortest Path": "Shortest path",
+  "Monotonic Stack": "Mono stack",
+  "Sliding Window": "Window",
+  "Two Pointers": "Two pointers",
+  "Linked List": "Linked list",
+  "Prefix Sum": "Prefix sum",
+  "Binary Search": "Binary search",
+  "Union Find": "Union-find",
+};
+
+export const topicLabel = (t: Topic): string => TOPIC_LABEL[t] ?? t;
+
+export const typesOf = (topics: readonly Topic[]): Topic[] => topics.filter(isProblemType);
+export const methodsOf = (topics: readonly Topic[]): Topic[] => topics.filter(isMethod);
+
+/** Compile-time: every Topic is either a type or a method, never neither. */
+const _kind = {
+  Array: "type",
+  String: "type",
+  Matrix: "type",
+  "Linked List": "type",
+  Stack: "type",
+  Heap: "type",
+  Tree: "type",
+  "Binary Search Tree": "type",
+  Trie: "type",
+  Graph: "type",
+  Intervals: "type",
+  "Hash Table": "method",
+  "Two Pointers": "method",
+  "Sliding Window": "method",
+  "Prefix Sum": "method",
+  Sorting: "method",
+  "Binary Search": "method",
+  "Monotonic Stack": "method",
+  BFS: "method",
+  DFS: "method",
+  Backtracking: "method",
+  Recursion: "method",
+  "Dynamic Programming": "method",
+  Greedy: "method",
+  "Union Find": "method",
+  "Topological Sort": "method",
+  "Shortest Path": "method",
+  "Divide and Conquer": "method",
+  "Bit Manipulation": "method",
+  Math: "method",
+  Design: "method",
+} as const satisfies Record<Topic, "type" | "method">;
+void _kind;
+
 /** A lightweight row in the browsable catalogue. Every problem has one. */
 export interface CatalogEntry {
   id: number;

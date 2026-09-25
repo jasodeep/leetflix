@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "motion/react";
+
 import { LANGUAGE_LABEL, LANGUAGES, type Language } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -28,11 +30,19 @@ export function LanguageToggle({
             aria-selected={active}
             onClick={() => onChange(lang)}
             className={cn(
-              "rounded-[5px] px-2.5 py-1 font-mono text-xs transition-colors",
-              active ? "bg-fg text-bg" : "text-fg-muted hover:text-fg",
+              "relative rounded-[5px] px-2.5 py-1 font-mono text-xs transition-colors",
+              active ? "text-bg" : "text-fg-muted hover:text-fg",
             )}
           >
-            {LANGUAGE_LABEL[lang]}
+            {active && (
+              <motion.span
+                layoutId="lang-pill"
+                className="bg-fg absolute inset-0 rounded-[5px]"
+                transition={{ type: "spring", stiffness: 500, damping: 40 }}
+                aria-hidden
+              />
+            )}
+            <span className="relative">{LANGUAGE_LABEL[lang]}</span>
           </button>
         );
       })}

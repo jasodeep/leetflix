@@ -1,7 +1,6 @@
 import { catalog } from "@/content/catalog";
 import { problems } from "@/content/problems";
-import { topicStats } from "@/lib/catalog-query";
-import type { CatalogItem, Problem, Topic } from "@/lib/types";
+import type { CatalogItem, Problem } from "@/lib/types";
 
 /**
  * Read-side query layer over the static content.
@@ -26,6 +25,3 @@ export const getAllProblems = (): readonly Problem[] => problems;
 
 export const getCatalogItem = (slug: string): CatalogItem | undefined =>
   catalogItems.find((c) => c.slug === slug);
-
-/** All topics that appear in the catalogue, most frequent first. */
-export const allTopics = (): Topic[] => topicStats(catalogItems).map((s) => s.topic);

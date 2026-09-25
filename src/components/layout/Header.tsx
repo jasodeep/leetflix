@@ -15,7 +15,7 @@ const GithubIcon = ({ className }: { className?: string }) => (
 
 export function Header() {
   return (
-    <header className="border-border/60 bg-bg/80 supports-[backdrop-filter]:bg-bg/60 sticky top-0 z-40 border-b backdrop-blur">
+    <header className="border-border/60 bg-bg/70 supports-[backdrop-filter]:bg-bg/45 sticky top-0 z-40 border-b backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
@@ -32,7 +32,7 @@ export function Header() {
             href={site.github}
             target="_blank"
             rel="noreferrer"
-            className="border-border bg-surface text-fg-muted hover:border-border-strong hover:text-fg flex size-8 items-center justify-center rounded-md border transition-colors"
+            className="border-border bg-surface/80 text-fg-muted hover:border-brand/50 hover:text-fg flex size-8 items-center justify-center rounded-md border transition-all duration-300 hover:shadow-[0_0_20px_-6px_var(--color-brand)]"
             aria-label="Source on GitHub"
           >
             <GithubIcon className="size-4" />

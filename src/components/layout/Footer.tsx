@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 
 export function Footer() {
   return (
-    <footer className="border-border/60 mt-24 border-t">
+    <footer className="border-border/60 relative z-10 mt-24 border-t">
       <div className="text-fg-muted mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <LogoMark size={22} />

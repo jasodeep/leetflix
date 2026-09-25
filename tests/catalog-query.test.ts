@@ -6,10 +6,11 @@ import {
   difficultyStats,
   hasActiveFilter,
   matchesSearch,
+  methodStats,
   PAGE_SIZE,
   paginate,
   readQuery,
-  topicStats,
+  typeStats,
   writeQuery,
   type Query,
 } from "@/lib/catalog-query";
@@ -32,45 +33,58 @@ const items: CatalogItem[] = [
     slug: "container",
     title: "Container With Most Water",
     difficulty: "Medium",
-    topics: ["Two Pointers"],
+    topics: ["Array", "Two Pointers"],
   }),
   item({
     id: 42,
     slug: "trap",
     title: "Trapping Rain Water",
     difficulty: "Hard",
-    topics: ["Two Pointers", "Stack"],
+    topics: ["Array", "Two Pointers", "Stack"],
     available: true,
   }),
   item({ id: 121, slug: "stock", title: "Best Time to Buy and Sell Stock", topics: ["Array"] }),
 ];
-const topics = ["Array", "Hash Table", "Two Pointers", "Stack"] as const;
 
 describe("readQuery / writeQuery", () => {
   it("round-trips every field and omits defaults", () => {
     const q: Query = {
       q: "water",
       difficulty: "Hard",
-      topic: "Stack",
+      type: "Array",
+      method: "Two Pointers",
       available: true,
       sort: "title",
       dir: "desc",
       page: 3,
     };
     const params = writeQuery(q);
-    expect(readQuery(params, topics)).toEqual(q);
+    expect(readQuery(params)).toEqual(q);
     expect(writeQuery(DEFAULT_QUERY).toString()).toBe("");
   });
 
+  it("maps a legacy topic= param onto type or method", () => {
+    expect(readQuery(new URLSearchParams("topic=Array"))).toMatchObject({
+      type: "Array",
+      method: null,
+    });
+    expect(readQuery(new URLSearchParams("topic=Two+Pointers"))).toMatchObject({
+      type: null,
+      method: "Two Pointers",
+    });
+  });
+
   it("ignores unknown or malformed values", () => {
-    const p = new URLSearchParams("difficulty=Insane&topic=Nope&sort=random&dir=sideways&page=-4");
-    expect(readQuery(p, topics)).toEqual(DEFAULT_QUERY);
+    const p = new URLSearchParams(
+      "difficulty=Insane&type=Nope&method=Nope&sort=random&dir=sideways&page=-4",
+    );
+    expect(readQuery(p)).toEqual(DEFAULT_QUERY);
   });
 
   it("reports whether any filter is active", () => {
     expect(hasActiveFilter(DEFAULT_QUERY)).toBe(false);
     expect(hasActiveFilter({ ...DEFAULT_QUERY, sort: "title", page: 2 })).toBe(false);
-    expect(hasActiveFilter({ ...DEFAULT_QUERY, available: true })).toBe(true);
+    expect(hasActiveFilter({ ...DEFAULT_QUERY, method: "Greedy" })).toBe(true);
   });
 });
 
@@ -85,10 +99,11 @@ describe("matchesSearch", () => {
 });
 
 describe("applyQuery", () => {
-  it("filters by difficulty, topic and availability together", () => {
+  it("filters by difficulty, type, method and availability together", () => {
     const out = applyQuery(items, {
       ...DEFAULT_QUERY,
-      topic: "Two Pointers",
+      type: "Array",
+      method: "Two Pointers",
       available: true,
     });
     expect(out.map((i) => i.id)).toEqual([42]);
@@ -123,12 +138,11 @@ describe("stats", () => {
     ]);
   });
 
-  it("orders topics by frequency, then name", () => {
-    expect(topicStats(items).map((t) => `${t.topic}:${t.count}`)).toEqual([
-      "Array:2",
+  it("splits tags into type vs method rails", () => {
+    expect(typeStats(items).map((t) => `${t.topic}:${t.count}`)).toEqual(["Array:4", "Stack:1"]);
+    expect(methodStats(items).map((t) => `${t.topic}:${t.count}`)).toEqual([
       "Two Pointers:2",
       "Hash Table:1",
-      "Stack:1",
     ]);
   });
 });

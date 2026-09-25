@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 
 import { leetcodeUrl } from "@/lib/site";
-import type { CatalogItem, Difficulty } from "@/lib/types";
+import { methodsOf, topicLabel, typesOf, type CatalogItem, type Difficulty } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export const difficultyText: Record<Difficulty, string> = {
@@ -16,9 +16,28 @@ export const difficultyText: Record<Difficulty, string> = {
 
 /** Shared grid template so header and rows line up without a real <table>. */
 export const ROW_GRID =
-  "grid grid-cols-[2.5rem_minmax(0,1fr)_5.5rem] items-center gap-x-3 sm:grid-cols-[2.5rem_3.5rem_minmax(0,1fr)_5.5rem_7rem] md:grid-cols-[2.5rem_3.5rem_minmax(0,1fr)_5.5rem_minmax(0,14rem)_7rem]";
+  "grid grid-cols-[2.5rem_minmax(0,1fr)_5.5rem] items-center gap-x-3 sm:grid-cols-[2.5rem_3.5rem_minmax(0,1fr)_5.5rem_7rem] lg:grid-cols-[2.5rem_3.5rem_minmax(0,1fr)_5.5rem_minmax(0,8.5rem)_minmax(0,10rem)_6.5rem]";
 
-const MAX_TOPICS = 2;
+const Tag = ({ label }: { label: string }) => (
+  <span className="bg-surface-2 text-fg-muted truncate rounded px-1.5 py-0.5 text-[11px]">
+    {label}
+  </span>
+);
+
+const TagCell = ({ tags }: { tags: string[] }) => (
+  <div role="cell" className="hidden min-w-0 items-center gap-1 lg:flex">
+    {tags.length === 0 ? (
+      <span className="text-fg-subtle">—</span>
+    ) : (
+      <>
+        <Tag label={tags[0]!} />
+        {tags.length > 1 && (
+          <span className="text-fg-subtle shrink-0 font-mono text-[11px]">+{tags.length - 1}</span>
+        )}
+      </>
+    )}
+  </div>
+);
 
 interface RowProps {
   item: CatalogItem;
@@ -54,18 +73,18 @@ export function ProblemTableRow({ item, index, active, onHover, register }: RowP
       data-active={active || undefined}
       className={cn(
         ROW_GRID,
-        "border-border/70 relative isolate min-h-12 border-b px-3 py-2 text-sm last:border-b-0 sm:px-4",
+        "row-sheen border-border/70 relative isolate min-h-12 overflow-hidden border-b px-3 py-2 text-sm last:border-b-0 sm:px-4",
         !item.available && "text-fg-muted",
       )}
     >
       {active && (
         <motion.div
           layoutId="row-cursor"
-          className="bg-fg/[0.045] pointer-events-none absolute inset-0 -z-10"
+          className="row-cursor-wash pointer-events-none absolute inset-0 -z-10"
           transition={{ type: "spring", stiffness: 600, damping: 45 }}
           aria-hidden
         >
-          <span className="bg-brand absolute inset-y-0 left-0 w-0.5" />
+          <span className="bg-brand absolute inset-y-0 left-0 w-0.5 shadow-[0_0_12px_var(--color-brand)]" />
         </motion.div>
       )}
 
@@ -122,21 +141,8 @@ export function ProblemTableRow({ item, index, active, onHover, register }: RowP
         {item.difficulty}
       </div>
 
-      <div role="cell" className="hidden min-w-0 items-center gap-1.5 md:flex">
-        {item.topics.slice(0, MAX_TOPICS).map((t) => (
-          <span
-            key={t}
-            className="bg-surface-2 text-fg-muted truncate rounded px-1.5 py-0.5 text-[11px]"
-          >
-            {t}
-          </span>
-        ))}
-        {item.topics.length > MAX_TOPICS && (
-          <span className="text-fg-subtle shrink-0 font-mono text-[11px]">
-            +{item.topics.length - MAX_TOPICS}
-          </span>
-        )}
-      </div>
+      <TagCell tags={typesOf(item.topics).map(topicLabel)} />
+      <TagCell tags={methodsOf(item.topics).map(topicLabel)} />
 
       <div role="cell" className="hidden justify-end sm:flex">
         {item.available ? (
