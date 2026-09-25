@@ -1,8 +1,18 @@
 "use client";
 
-import { ArrowUp, ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+import {
+  ArrowUp,
+  Boxes,
+  ChevronLeft,
+  ChevronRight,
+  Gauge,
+  Search,
+  Sparkles,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { Kbd } from "@/components/ui/Badge";
 import {
@@ -19,7 +29,7 @@ import {
   type SortKey,
 } from "@/lib/catalog-query";
 import { useUrlSearch } from "@/lib/hooks/useUrlSearch";
-import { topicLabel, type CatalogItem } from "@/lib/types";
+import { topicLabel, type CatalogItem, type Difficulty } from "@/lib/types";
 import { clamp, cn } from "@/lib/utils";
 
 import { difficultyText, ProblemTableRow, ROW_GRID } from "./ProblemTableRow";
@@ -148,67 +158,73 @@ export function ProblemTable({ items }: ProblemTableProps) {
           <AvailableSwitch checked={query.available} onChange={(v) => update({ available: v })} />
         </div>
 
-        <FilterRail
-          label="Difficulty"
-          allLabel="All"
-          pillId="difficulty-pill"
-          value={query.difficulty}
-          onChange={(d) => update({ difficulty: d })}
-          options={diffs.map((s) => ({
-            id: s.difficulty,
-            label: s.difficulty,
-            count: s.total,
-            className: difficultyText[s.difficulty],
-          }))}
-        />
-        <FilterRail
-          label="Type"
-          allLabel="All types"
-          pillId="type-pill"
-          value={query.type}
-          onChange={(t) => update({ type: t })}
-          options={types.map((s) => ({
-            id: s.topic,
-            label: topicLabel(s.topic),
-            count: s.count,
-          }))}
-        />
-        <FilterRail
-          label="Method"
-          allLabel="All methods"
-          pillId="method-pill"
-          value={query.method}
-          onChange={(t) => update({ method: t })}
-          options={methods.map((s) => ({
-            id: s.topic,
-            label: topicLabel(s.topic),
-            count: s.count,
-          }))}
-        />
-      </div>
-
-      <div className="text-fg-subtle flex items-center justify-between font-mono text-xs">
-        <p aria-live="polite">
-          {page.total === 0
-            ? "No matches"
-            : `Showing ${page.from}–${page.to} of ${page.total}${
-                page.total !== items.length ? ` (of ${items.length})` : ""
-              }`}
-        </p>
-        <AnimatePresence>
-          {hasActiveFilter(query) && (
-            <motion.button
-              type="button"
-              initial={{ opacity: 0, x: 6 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 6 }}
-              onClick={() => setParams(writeQuery(DEFAULT_QUERY))}
-              className="hover:text-fg flex items-center gap-1 underline-offset-4 hover:underline"
-            >
-              <X className="size-3" aria-hidden /> Clear filters
-            </motion.button>
-          )}
-        </AnimatePresence>
+        <div className="border-border bg-surface/80 divide-border/80 rounded-card divide-y border shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_56px_-36px_rgba(229,9,20,0.3)] backdrop-blur-sm">
+          <FilterRail
+            label="Difficulty"
+            icon={Gauge}
+            allLabel="All"
+            layout="segmented"
+            pillId="difficulty-pill"
+            value={query.difficulty}
+            onChange={(d) => update({ difficulty: d })}
+            options={diffs.map((s) => ({
+              id: s.difficulty,
+              label: s.difficulty,
+              count: s.total,
+              className: difficultyText[s.difficulty],
+              dot: difficultyDot[s.difficulty],
+            }))}
+          />
+          <FilterRail
+            label="Type"
+            icon={Boxes}
+            allLabel="All types"
+            pillId="type-pill"
+            value={query.type}
+            onChange={(t) => update({ type: t })}
+            options={types.map((s) => ({
+              id: s.topic,
+              label: topicLabel(s.topic),
+              count: s.count,
+            }))}
+          />
+          <FilterRail
+            label="Method"
+            icon={Sparkles}
+            allLabel="All methods"
+            pillId="method-pill"
+            value={query.method}
+            onChange={(t) => update({ method: t })}
+            options={methods.map((s) => ({
+              id: s.topic,
+              label: topicLabel(s.topic),
+              count: s.count,
+            }))}
+          />
+          <div className="text-fg-subtle flex items-center justify-between px-3 py-2.5 font-mono text-[11px] sm:px-4">
+            <p aria-live="polite">
+              {page.total === 0
+                ? "No matches"
+                : `Showing ${page.from}–${page.to} of ${page.total}${
+                    page.total !== items.length ? ` (of ${items.length})` : ""
+                  }`}
+            </p>
+            <AnimatePresence>
+              {hasActiveFilter(query) && (
+                <motion.button
+                  type="button"
+                  initial={{ opacity: 0, x: 6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 6 }}
+                  onClick={() => setParams(writeQuery(DEFAULT_QUERY))}
+                  className="hover:text-fg flex items-center gap-1 underline-offset-4 hover:underline"
+                >
+                  <X className="size-3" aria-hidden /> Clear filters
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
 
       <div
@@ -386,80 +402,136 @@ function AvailableSwitch({
   );
 }
 
+const difficultyDot: Record<Difficulty, string> = {
+  Easy: "bg-easy",
+  Medium: "bg-medium",
+  Hard: "bg-hard",
+};
+
 function FilterRail<T extends string>({
   label,
+  icon: Icon,
   allLabel,
   options,
   value,
   onChange,
   pillId,
+  layout = "wrap",
 }: {
   label: string;
+  icon: LucideIcon;
   allLabel: string;
-  options: { id: T; label: string; count: number; className?: string }[];
+  options: { id: T; label: string; count: number; className?: string; dot?: string }[];
   value: T | null;
   onChange: (v: T | null) => void;
   pillId: string;
+  layout?: "wrap" | "segmented";
 }) {
+  const selected = value !== null;
+  const segmented = layout === "segmented";
   const chip = (active: boolean, extra?: string) =>
     cn(
-      "relative shrink-0 rounded-full px-3 py-1 text-xs transition-colors",
+      "relative inline-flex items-center rounded-full px-2.5 py-1 text-xs transition-colors",
+      segmented && "px-3",
       active
-        ? (extra ?? "text-bg")
+        ? cn("text-bg", !segmented && "bg-fg", extra)
         : extra
-          ? cn(extra, "opacity-70 hover:opacity-100")
+          ? cn(extra, "opacity-75 hover:opacity-100")
           : "text-fg-muted hover:text-fg",
+      !segmented &&
+        !active &&
+        "border-border/80 bg-surface-2/70 hover:border-border-strong hover:bg-surface-3 border",
     );
+
+  const renderChip = (
+    key: string,
+    active: boolean,
+    extra: string | undefined,
+    onClick: () => void,
+    body: ReactNode,
+  ) => {
+    const className = chip(active, extra);
+    if (segmented) {
+      return (
+        <motion.button
+          key={key}
+          type="button"
+          role="radio"
+          aria-checked={active}
+          onClick={onClick}
+          whileTap={{ scale: 0.96 }}
+          className={className}
+        >
+          {active && <RailPill id={pillId} />}
+          <span className="relative z-10 inline-flex items-center">{body}</span>
+        </motion.button>
+      );
+    }
+    return (
+      <button
+        key={key}
+        type="button"
+        role="radio"
+        aria-checked={active}
+        onClick={onClick}
+        className={className}
+      >
+        {body}
+      </button>
+    );
+  };
+
   return (
-    <div className="space-y-1.5">
-      <p className="text-fg-subtle font-mono text-[10px] tracking-wider uppercase">{label}</p>
+    <div className="flex flex-col gap-2 px-3 py-3 sm:flex-row sm:items-start sm:gap-5 sm:px-4">
+      <p
+        className={cn(
+          "flex shrink-0 items-center gap-1.5 font-mono text-[10px] tracking-wider uppercase sm:w-24 sm:pt-1.5",
+          selected ? "text-fg" : "text-fg-subtle",
+        )}
+      >
+        <Icon className="size-3" aria-hidden />
+        {label}
+      </p>
       <div
         role="radiogroup"
         aria-label={label}
-        className="mask-fade-x -mx-4 flex scrollbar-none gap-1.5 overflow-x-auto px-4 py-0.5 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+        className={cn(
+          segmented
+            ? "bg-surface-2/90 ring-border inline-flex flex-wrap gap-0.5 self-start rounded-full p-0.5 ring-1"
+            : "flex flex-wrap gap-1.5",
+        )}
       >
-        <motion.button
-          type="button"
-          role="radio"
-          aria-checked={value === null}
-          onClick={() => onChange(null)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.94 }}
-          className={chip(value === null)}
-        >
-          {value === null && <RailPill id={pillId} />}
-          <span className="relative">{allLabel}</span>
-        </motion.button>
-        {options.map((opt) => {
-          const active = value === opt.id;
-          return (
-            <motion.button
-              key={opt.id}
-              type="button"
-              role="radio"
-              aria-checked={active}
-              onClick={() => onChange(active ? null : opt.id)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.94 }}
-              className={chip(active, opt.className)}
-            >
-              {active && <RailPill id={pillId} />}
-              <span className="relative">
-                {opt.label}
-                <span
-                  className={cn(
-                    "ml-1.5 font-mono text-[10px] tabular-nums",
-                    active ? "text-current/70" : "text-fg-subtle",
-                  )}
-                >
-                  {opt.count}
-                </span>
-              </span>
-            </motion.button>
-          );
-        })}
+        {renderChip("all", value === null, undefined, () => onChange(null), allLabel)}
+        {options.map((opt) =>
+          renderChip(
+            opt.id,
+            value === opt.id,
+            opt.className,
+            () => onChange(value === opt.id ? null : opt.id),
+            <>
+              {opt.dot && (
+                <span className={cn("mr-1.5 size-1.5 rounded-full", opt.dot)} aria-hidden />
+              )}
+              {opt.label}
+              <ChipCount n={opt.count} active={value === opt.id} />
+            </>,
+          ),
+        )}
       </div>
     </div>
+  );
+}
+
+function ChipCount({ n, active }: { n: number; active: boolean }) {
+  return (
+    <span
+      className={cn(
+        "ml-1.5 inline-flex min-w-4 justify-center rounded-md px-1 font-mono text-[10px] tabular-nums",
+        active ? "bg-black/20 text-current/75" : "bg-surface-3 text-fg-subtle",
+      )}
+    >
+      {n}
+    </span>
   );
 }
 
