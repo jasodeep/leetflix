@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { getAllProblems } from "@/lib/problems";
+import { catalog } from "@/content/catalog";
 import { absUrl } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -8,7 +8,7 @@ export const dynamic = "force-static";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: absUrl("/"), changeFrequency: "weekly", priority: 1 },
-    ...getAllProblems().map((p) => ({
+    ...catalog.map((p) => ({
       url: absUrl(`/problems/${p.slug}`),
       changeFrequency: "monthly" as const,
       priority: 0.7,

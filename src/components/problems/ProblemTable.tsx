@@ -553,7 +553,7 @@ function Pagination({
   pageCount: number;
   onChange: (n: number) => void;
 }) {
-  const pages = Array.from({ length: pageCount }, (_, i) => i + 1);
+  const pages = pageWindow(page, pageCount);
   const btn =
     "flex size-8 items-center justify-center rounded-md border text-xs transition-colors disabled:opacity-40";
   return (
@@ -567,29 +567,35 @@ function Pagination({
       >
         <ChevronLeft className="size-4" aria-hidden />
       </button>
-      {pages.map((n) => (
-        <button
-          key={n}
-          type="button"
-          onClick={() => onChange(n)}
-          aria-current={n === page ? "page" : undefined}
-          className={cn(
-            btn,
-            "relative font-mono",
-            n === page ? "text-bg border-fg" : "border-border text-fg-muted hover:text-fg",
-          )}
-        >
-          {n === page && (
-            <motion.span
-              layoutId="page-pill"
-              className="bg-fg absolute inset-0 rounded-[5px]"
-              transition={spring}
-              aria-hidden
-            />
-          )}
-          <span className="relative">{n}</span>
-        </button>
-      ))}
+      {pages.map((n, i) =>
+        n === "…" ? (
+          <span key={`e${i}`} className="text-fg-subtle w-8 text-center font-mono text-xs">
+            …
+          </span>
+        ) : (
+          <button
+            key={n}
+            type="button"
+            onClick={() => onChange(n)}
+            aria-current={n === page ? "page" : undefined}
+            className={cn(
+              btn,
+              "relative font-mono",
+              n === page ? "text-bg border-fg" : "border-border text-fg-muted hover:text-fg",
+            )}
+          >
+            {n === page && (
+              <motion.span
+                layoutId="page-pill"
+                className="bg-fg absolute inset-0 rounded-[5px]"
+                transition={spring}
+                aria-hidden
+              />
+            )}
+            <span className="relative">{n}</span>
+          </button>
+        ),
+      )}
       <button
         type="button"
         onClick={() => onChange(page + 1)}
@@ -601,4 +607,19 @@ function Pagination({
       </button>
     </nav>
   );
+}
+
+/** 1 … 8 9 10 … 82 — never paint a button per page when the catalogue is huge. */
+function pageWindow(current: number, total: number): Array<number | "…"> {
+  if (total <= 9) return Array.from({ length: total }, (_, i) => i + 1);
+  const keep = new Set([1, total, current - 1, current, current + 1]);
+  if (current <= 3) [2, 3, 4].forEach((n) => keep.add(n));
+  if (current >= total - 2) [total - 3, total - 2, total - 1].forEach((n) => keep.add(n));
+  const sorted = [...keep].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b);
+  const out: Array<number | "…"> = [];
+  for (const n of sorted) {
+    if (out.length && n - (out[out.length - 1] as number) > 1) out.push("…");
+    out.push(n);
+  }
+  return out;
 }

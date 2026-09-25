@@ -1,4 +1,5 @@
 import { catalog } from "@/content/catalog";
+import { materialize } from "@/content/families";
 import { problems } from "@/content/problems";
 import type { CatalogItem, Problem } from "@/lib/types";
 
@@ -11,15 +12,21 @@ import type { CatalogItem, Problem } from "@/lib/types";
  */
 
 const problemBySlug = new Map(problems.map((p) => [p.slug, p]));
+const catalogBySlug = new Map(catalog.map((c) => [c.slug, c]));
 
 export type { CatalogItem };
 
 export const catalogItems: readonly CatalogItem[] = catalog.map((entry) => ({
   ...entry,
-  available: problemBySlug.has(entry.slug),
+  available: true,
 }));
 
-export const getProblem = (slug: string): Problem | undefined => problemBySlug.get(slug);
+export const getProblem = (slug: string): Problem | undefined => {
+  const authored = problemBySlug.get(slug);
+  if (authored) return authored;
+  const entry = catalogBySlug.get(slug);
+  return entry ? materialize(entry) : undefined;
+};
 
 export const getAllProblems = (): readonly Problem[] => problems;
 

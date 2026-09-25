@@ -1,3 +1,5 @@
+import { catalog } from "@/content/catalog";
+import { familyOf, familyTraces } from "@/content/families";
 import type { TraceModule } from "@/lib/viz/types";
 
 type Loader = () => Promise<{ default: TraceModule }>;
@@ -23,6 +25,8 @@ export const traceLoaders: Record<string, Loader> = {
 
 export async function loadTraces(slug: string): Promise<TraceModule> {
   const loader = traceLoaders[slug];
-  if (!loader) throw new Error(`No trace module registered for "${slug}"`);
-  return (await loader()).default;
+  if (loader) return (await loader()).default;
+  const row = catalog.find((c) => c.slug === slug);
+  if (!row) throw new Error(`No trace module registered for "${slug}"`);
+  return familyTraces(familyOf(row.topics));
 }

@@ -19,7 +19,18 @@ const getHighlighter = (): Promise<Highlighter> => {
   return highlighterPromise;
 };
 
+const highlightCache = new Map<string, Promise<HighlightedCode>>();
+
 export async function highlight(source: string, lang: HighlightLang): Promise<HighlightedCode> {
+  const key = `${lang}:${source}`;
+  const cached = highlightCache.get(key);
+  if (cached) return cached;
+  const pending = highlightUncached(source, lang);
+  highlightCache.set(key, pending);
+  return pending;
+}
+
+const highlightUncached = async (source: string, lang: HighlightLang): Promise<HighlightedCode> => {
   const highlighter = await getHighlighter();
   const result = highlighter.codeToTokens(source, { lang, theme: THEME });
 
@@ -32,4 +43,4 @@ export async function highlight(source: string, lang: HighlightLang): Promise<Hi
   );
 
   return { lines, bg: result.bg ?? "#101010", fg: result.fg ?? "#ffffff" };
-}
+};
