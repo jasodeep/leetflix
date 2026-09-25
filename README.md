@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Leetflix
 
-## Getting Started
+> Watch. Code. Repeat.
 
-First, run the development server:
+A Netflix-parody catalogue of LeetCode problems. Every deep-dive has a detailed, visual breakdown of the problem, multiple approaches with **Python and Go** solutions side by side, and an **interactive step-by-step animation** you can scrub through like a video — with the executing source line highlighted in sync.
+
+Pure front-end. `next build` emits a fully static site in `out/` that runs on any static host.
+
+## Stack
+
+- **Next.js 16** (App Router, `output: "export"`), **React 19**, **TypeScript** (strict)
+- **Tailwind CSS v4** with a small token set (`src/app/globals.css`)
+- **shiki** for build-time syntax highlighting (tokens are serialised, so the client never ships a highlighter)
+- **motion** for layout/spring animations in the visualisation panels
+- **Vitest** for content-integrity and library tests
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
+npm run check        # lint + typecheck + tests + prettier
+npm run build        # static export → out/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Requires Node ≥ 20.19 (see `.nvmrc`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How it's put together
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+  app/                    routes (all prerendered): /, /problems, /problems/[slug], sitemap, robots
+  components/
+    brand/                LEETFLIX wordmark (SVG textPath on an arc, no image asset)
+    code/                 TokenCode (renders shiki tokens), SolutionCode (Py/Go toggle), CodeBlock
+    content/              RichText + InlineMarkdown for the structured content model
+    player/               AlgorithmPlayer → InputEditor + PlayerStage (viz, narration, transport)
+    problems/             cards, Netflix-style rows, the filterable browser, ApproachSection
+    viz/                  one component per Panel kind + the Viz layout dispatcher
+  content/
+    catalog.ts            every catalogued problem (id, title, difficulty, topics)
+    problems/<slug>.ts    full deep-dives: statement, examples, insights, approaches, inputs
+    traces/<slug>.ts      step recorders for each animated approach (lazy-loaded)
+  lib/
+    types.ts              Problem / Approach / Block content model
+    viz/                  Panel & Step types, Recorder, panel builders
+    markers.ts            substring → line-number anchors that sync animation and code
+    inputs.ts             parsing + limits for user-editable inputs
+    code/highlight.ts     server-only shiki singleton
+    problems.ts           read-side queries (rows, filters, lookups)
+tests/                    vitest
+```
 
-## Learn More
+### The animation model
 
-To learn more about Next.js, take a look at the following resources:
+An approach is animated by a **trace**: a plain function that runs the algorithm and records a `Step` after each meaningful operation. A step is `{ marker, note, panels }`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `panels` is a snapshot of visual state (arrays with pointers/tones, hash maps, stacks, variables, linked lists, bar charts, grids). Panels are data, so they're deep-cloned, diffable, unit-testable, and animated with layout transitions.
+- `marker` names a line in the solution. Markers are declared per language as a **unique substring** of the source (`markers: { loop: "for i, x in enumerate(nums)" }`) and resolved to line numbers at build time. Reformatting code can't silently desynchronise the animation — a missing or ambiguous marker fails the build and the tests.
+- `note` is the narration for that step (supports `code`, **bold**, _italic_).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The player parses user input against the problem's declared `inputs` schema (with size limits so the UI stays legible), runs the trace, and lets you play/scrub. The active step's marker drives the highlighted line in whichever language is selected.
 
-## Deploy on Vercel
+### Adding a problem
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Add a row to `src/content/catalog.ts` if it isn't there.
+2. Create `src/content/problems/<slug>.ts` exporting a `Problem`. Write both `python` and `go` for every approach; use the `py`/`go` tagged templates for clean indentation.
+3. For each `traceable: true` approach, add a trace in `src/content/traces/<slug>.ts` and register the loader in `src/content/traces/index.ts`.
+4. Register the problem in `src/content/problems/index.ts`.
+5. `npm test` — the content suite checks markers resolve in both languages, every step's marker exists, default and example inputs parse, and that the optimal trace reproduces every documented example output.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Routes, cards, rows and the sitemap derive from the registry; nothing else needs touching.
+
+## Deploying
+
+`npm run build` writes `out/`. Set `NEXT_PUBLIC_SITE_URL` at build time so canonical URLs, Open Graph and the sitemap point at the right origin:
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://leetflix.example.com npm run build
+```
+
+Serve `out/` from GitHub Pages, Cloudflare Pages, Netlify, S3 + CloudFront, nginx — anything that serves files.
+
+## Status
+
+150 problems catalogued (NeetCode 150 ⊇ Blind 75). 11 have complete deep-dives with animations; the rest link to LeetCode until their episode airs.
+
+Parody project. Not affiliated with Netflix or LeetCode. Problem statements are © their respective owners.
