@@ -14,8 +14,8 @@ export function Footer() {
           </p>
         </div>
         <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label="Footer">
-          <Link href="/problems" className="hover:text-fg">
-            Browse
+          <Link href="/" className="hover:text-fg">
+            Problems
           </Link>
           <a href={site.github} target="_blank" rel="noreferrer" className="hover:text-fg">
             GitHub

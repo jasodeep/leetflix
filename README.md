@@ -2,7 +2,7 @@
 
 > Watch. Code. Repeat.
 
-A Netflix-parody catalogue of LeetCode problems. Every deep-dive has a detailed, visual breakdown of the problem, multiple approaches with **Python and Go** solutions side by side, and an **interactive step-by-step animation** you can scrub through like a video — with the executing source line highlighted in sync.
+A Netflix-parody take on LeetCode. The front page is a LeetCode-style problem table (search, difficulty, topic, sort, paging — all in the URL, all keyboard-driven). Every deep-dive has a detailed, visual breakdown of the problem, multiple approaches with **Python and Go** solutions side by side, and an **interactive step-by-step animation** you can scrub through like a video — with the executing source line highlighted in sync.
 
 Pure front-end. `next build` emits a fully static site in `out/` that runs on any static host.
 
@@ -29,13 +29,15 @@ Requires Node ≥ 20.19 (see `.nvmrc`).
 
 ```
 src/
-  app/                    routes (all prerendered): /, /problems, /problems/[slug], sitemap, robots
+  app/                    routes (all prerendered): / (problem table), /problems/[slug], sitemap, robots
   components/
     brand/                LEETFLIX wordmark (SVG textPath on an arc, no image asset)
-    code/                 TokenCode (renders shiki tokens), SolutionCode (Py/Go toggle), CodeBlock
+    code/                 TokenCode (shiki tokens + sliding line cursor), SolutionCode, CodeBlock
     content/              RichText + InlineMarkdown for the structured content model
+    layout/               Header (nav underline, scroll progress), Footer
     player/               AlgorithmPlayer → InputEditor + PlayerStage (viz, narration, transport)
-    problems/             cards, Netflix-style rows, the filterable browser, ApproachSection
+    problems/             ProblemTable (+Row), DifficultyRing, TableOfContents, ApproachSection, cards
+    ui/                   Badge primitives, Reveal (fade-up on scroll)
     viz/                  one component per Panel kind + the Viz layout dispatcher
   content/
     catalog.ts            every catalogued problem (id, title, difficulty, topics)
@@ -47,9 +49,14 @@ src/
     markers.ts            substring → line-number anchors that sync animation and code
     inputs.ts             parsing + limits for user-editable inputs
     code/highlight.ts     server-only shiki singleton
-    problems.ts           read-side queries (rows, filters, lookups)
+    catalog-query.ts      pure URL ⇄ filter/sort/page logic behind the problem table
+    problems.ts           read-side queries (catalogue, lookups)
 tests/                    vitest
 ```
+
+### The problem table
+
+`/` is the whole catalogue, LeetCode-style: status (▶ animated / lock / coming soon), number, title, difficulty, topics, and which solutions exist. Search (`/`), difficulty, topic rail, "animated only", sortable columns and 50-per-page paging are all encoded in the query string via `replaceState`, so any view is a shareable URL on a static host. `j`/`k` move a row cursor, `Enter` opens, `Esc` clears. The logic lives in `lib/catalog-query.ts` and is unit-tested independently of React.
 
 ### The animation model
 
@@ -69,7 +76,7 @@ The player parses user input against the problem's declared `inputs` schema (wit
 4. Register the problem in `src/content/problems/index.ts`.
 5. `npm test` — the content suite checks markers resolve in both languages, every step's marker exists, default and example inputs parse, and that the optimal trace reproduces every documented example output.
 
-Routes, cards, rows and the sitemap derive from the registry; nothing else needs touching.
+Routes, the table's ▶ status, the difficulty ring and the sitemap derive from the registry; nothing else needs touching.
 
 ## Deploying
 

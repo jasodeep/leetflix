@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,7 +8,9 @@ import { RichText } from "@/components/content/RichText";
 import { AlgorithmPlayer, type PlayerApproach } from "@/components/player/AlgorithmPlayer";
 import { ApproachSection } from "@/components/problems/ApproachSection";
 import { ProblemCard } from "@/components/problems/ProblemCard";
+import { TableOfContents } from "@/components/problems/TableOfContents";
 import { DifficultyBadge, Chip } from "@/components/ui/Badge";
+import { Reveal } from "@/components/ui/Reveal";
 import { Viz } from "@/components/viz/Viz";
 import { highlight } from "@/lib/code/highlight";
 import { resolveMarkers } from "@/lib/markers";
@@ -109,12 +111,8 @@ export default async function ProblemPage({ params }: PageProps<"/problems/[slug
 
       <header className="border-border space-y-5 border-b pb-8">
         <nav className="text-fg-subtle font-mono text-xs" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-fg">
-            Home
-          </Link>
-          <span className="mx-2">/</span>
-          <Link href="/problems" className="hover:text-fg">
-            Problems
+          <Link href="/" className="hover:text-fg inline-flex items-center gap-1.5">
+            <ArrowLeft className="size-3" aria-hidden /> All problems
           </Link>
           <span className="mx-2">/</span>
           <span className="text-fg-muted">#{problem.id}</span>
@@ -130,11 +128,7 @@ export default async function ProblemPage({ params }: PageProps<"/problems/[slug
             <div className="flex flex-wrap items-center gap-2">
               <DifficultyBadge difficulty={problem.difficulty} />
               {problem.topics.map((t) => (
-                <Link
-                  key={t}
-                  href={`/problems?topic=${encodeURIComponent(t)}`}
-                  className="rounded-full"
-                >
+                <Link key={t} href={`/?topic=${encodeURIComponent(t)}`} className="rounded-full">
                   <Chip>{t}</Chip>
                 </Link>
               ))}
@@ -182,8 +176,9 @@ export default async function ProblemPage({ params }: PageProps<"/problems/[slug
             <h2 className="text-fg text-2xl font-semibold tracking-tight">Examples</h2>
             <div className="space-y-4">
               {problem.examples.map((ex, i) => (
-                <div
+                <Reveal
                   key={i}
+                  delay={i * 0.05}
                   className="rounded-card border-border bg-surface overflow-hidden border"
                 >
                   <div className="grid gap-4 p-5 sm:grid-cols-2">
@@ -217,7 +212,7 @@ export default async function ProblemPage({ params }: PageProps<"/problems/[slug
                       )}
                     </div>
                   )}
-                </div>
+                </Reveal>
               ))}
             </div>
           </section>
@@ -226,7 +221,9 @@ export default async function ProblemPage({ params }: PageProps<"/problems/[slug
             <h2 className="text-fg text-2xl font-semibold tracking-tight">
               Understanding the problem
             </h2>
-            <RichText blocks={problem.insights} className="text-[15px]" />
+            <Reveal>
+              <RichText blocks={problem.insights} className="text-[15px]" />
+            </Reveal>
           </section>
 
           <section id="approaches" className="scroll-mt-24 space-y-12">
@@ -238,7 +235,9 @@ export default async function ProblemPage({ params }: PageProps<"/problems/[slug
               </p>
             </div>
             {problem.approaches.map((a, i) => (
-              <ApproachSection key={a.id} approach={a} index={i} />
+              <Reveal key={a.id}>
+                <ApproachSection approach={a} index={i} />
+              </Reveal>
             ))}
           </section>
 
@@ -278,20 +277,9 @@ export default async function ProblemPage({ params }: PageProps<"/problems/[slug
         </div>
 
         <aside className="hidden lg:block">
-          <nav
-            className="border-border sticky top-20 space-y-1 border-l pl-4 text-sm"
-            aria-label="On this page"
-          >
-            {sections.map((s) => (
-              <a
-                key={s.id}
-                href={`#${s.id}`}
-                className="text-fg-subtle hover:text-fg block py-1 transition-colors"
-              >
-                {s.label}
-              </a>
-            ))}
-          </nav>
+          <div className="sticky top-20">
+            <TableOfContents sections={sections} />
+          </div>
         </aside>
       </div>
     </div>

@@ -11,7 +11,7 @@ export default function NotFound() {
         Or anywhere, really. The page you asked for doesn&apos;t exist. Try the catalogue instead.
       </p>
       <Link
-        href="/problems"
+        href="/"
         className="bg-fg text-bg inline-flex h-10 items-center rounded-md px-4 text-sm font-medium"
       >
         Browse problems

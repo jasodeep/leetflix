@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "motion/react";
+
 import type { HighlightedCode, Token } from "@/lib/code/tokens";
 import { cn } from "@/lib/utils";
 
@@ -17,8 +21,9 @@ const styleFor = (t: Token): React.CSSProperties => ({
 });
 
 /**
- * Renders pre-tokenised code. Works in both server and client trees because
- * it's pure presentation; the player just re-renders it with a new activeLine.
+ * Renders pre-tokenised code. The active-line highlight is one shared
+ * element that slides between lines, so the cursor reads as movement rather
+ * than a blink. Pure presentation otherwise; safe to render from server trees.
  */
 export function TokenCode({ code, activeLine, showLineNumbers = true, className }: TokenCodeProps) {
   const gutter = String(code.lines.length).length;
@@ -36,16 +41,21 @@ export function TokenCode({ code, activeLine, showLineNumbers = true, className 
               key={n}
               data-line={n}
               data-active={active || undefined}
-              className={cn(
-                "relative flex border-l-2 border-transparent px-4 transition-colors duration-150",
-                active && "border-brand bg-brand/12",
-              )}
+              className="relative flex px-4"
             >
+              {active && (
+                <motion.span
+                  layoutId="code-cursor"
+                  className="bg-brand/12 border-brand pointer-events-none absolute inset-0 border-l-2"
+                  transition={{ type: "spring", stiffness: 700, damping: 45 }}
+                  aria-hidden
+                />
+              )}
               {showLineNumbers && (
                 <span
                   aria-hidden
                   className={cn(
-                    "mr-4 inline-block w-[var(--gutter)] shrink-0 text-right select-none",
+                    "relative mr-4 inline-block w-[var(--gutter)] shrink-0 text-right transition-colors select-none",
                     active ? "text-fg" : "text-fg-subtle",
                   )}
                   style={{ "--gutter": `${gutter}ch` } as React.CSSProperties}
@@ -53,7 +63,7 @@ export function TokenCode({ code, activeLine, showLineNumbers = true, className 
                   {n}
                 </span>
               )}
-              <span className="whitespace-pre">
+              <span className="relative whitespace-pre">
                 {line.length === 0
                   ? " "
                   : line.map((t, j) => (

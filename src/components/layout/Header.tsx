@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
-import { Kbd } from "@/components/ui/Badge";
 import { site } from "@/lib/site";
+
+import { HeaderNav } from "./HeaderNav";
+import { ScrollProgress } from "./ScrollProgress";
 
 /** lucide dropped brand icons in v1; GitHub's mark is small enough to inline. */
 const GithubIcon = ({ className }: { className?: string }) => (
@@ -16,36 +17,17 @@ export function Header() {
   return (
     <header className="border-border/60 bg-bg/80 supports-[backdrop-filter]:bg-bg/60 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2 rounded-sm" aria-label="Leetflix home">
+        <Link
+          href="/"
+          className="logo-glow flex items-center gap-2 rounded-sm"
+          aria-label="Leetflix home"
+        >
           <Logo size={24} />
         </Link>
 
-        <nav
-          className="text-fg-muted hidden items-center gap-5 text-sm sm:flex"
-          aria-label="Primary"
-        >
-          <Link href="/" className="hover:text-fg transition-colors">
-            Home
-          </Link>
-          <Link href="/problems" className="hover:text-fg transition-colors">
-            Browse
-          </Link>
-          <Link href="/problems?available=1" className="hover:text-fg transition-colors">
-            Now Streaming
-          </Link>
-        </nav>
+        <HeaderNav />
 
         <div className="ml-auto flex items-center gap-2">
-          <Link
-            href="/problems"
-            className="group border-border bg-surface text-fg-muted hover:border-border-strong hover:text-fg flex h-8 items-center gap-2 rounded-md border px-2.5 text-xs transition-colors"
-          >
-            <Search className="size-3.5" aria-hidden />
-            <span className="hidden sm:inline">Search problems</span>
-            <span className="hidden items-center gap-0.5 sm:flex">
-              <Kbd>/</Kbd>
-            </span>
-          </Link>
           <a
             href={site.github}
             target="_blank"
@@ -57,6 +39,7 @@ export function Header() {
           </a>
         </div>
       </div>
+      <ScrollProgress />
     </header>
   );
 }

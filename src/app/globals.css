@@ -36,17 +36,10 @@
 
   --radius-card: 0.625rem;
 
-  --animate-marquee: marquee 40s linear infinite;
   --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
+  --animate-ping-ring: ping-ring 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-blink: blink 1.1s steps(2, start) infinite;
 
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
   @keyframes pulse-soft {
     0%,
     100% {
@@ -54,6 +47,22 @@
     }
     50% {
       opacity: 1;
+    }
+  }
+  /* Expanding halo behind the play button while the animation is running. */
+  @keyframes ping-ring {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1.9);
+      opacity: 0;
+    }
+  }
+  @keyframes blink {
+    to {
+      visibility: hidden;
     }
   }
 }
@@ -143,6 +152,25 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Wordmark glow on hover: a red halo that fades in with the transition. */
+  .logo-glow {
+    transition: filter 0.35s ease;
+  }
+  .logo-glow:hover {
+    filter: drop-shadow(0 0 10px color-mix(in oklab, var(--color-brand) 70%, transparent));
+  }
+
+  /* Edge fade for horizontally scrolling chip rails. */
+  .mask-fade-x {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 1.25rem,
+      black calc(100% - 1.25rem),
+      transparent
+    );
   }
 
   /* Inline code inside prose. */

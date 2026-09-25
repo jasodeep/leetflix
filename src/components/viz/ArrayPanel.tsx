@@ -47,7 +47,16 @@ export function ArrayPanel({ panel }: { panel: ArrayPanelData }) {
                   )}
                   style={{ width: CELL, height: CELL }}
                 >
-                  <span className="truncate px-1">{String(val)}</span>
+                  {/* Keyed on the value so a mutation pops instead of silently swapping. */}
+                  <motion.span
+                    key={String(val)}
+                    initial={{ scale: 0.6, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 600, damping: 28 }}
+                    className="truncate px-1"
+                  >
+                    {String(val)}
+                  </motion.span>
                 </motion.div>
                 {showIndices && (
                   <span className="text-fg-subtle mt-1 font-mono text-[10px]">{i}</span>

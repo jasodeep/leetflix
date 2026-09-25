@@ -45,6 +45,14 @@ export function PlayerStage({ steps, code, markers }: PlayerStageProps) {
     }
   };
 
+  const status = step?.status ?? "running";
+  const glow =
+    status === "done"
+      ? "inset 0 0 0 1px var(--color-viz-green), inset 0 0 60px -30px var(--color-viz-green)"
+      : status === "fail"
+        ? "inset 0 0 0 1px var(--color-viz-red), inset 0 0 60px -30px var(--color-viz-red)"
+        : "inset 0 0 0 0px transparent, inset 0 0 0px 0px transparent";
+
   return (
     <div
       tabIndex={0}
@@ -53,7 +61,17 @@ export function PlayerStage({ steps, code, markers }: PlayerStageProps) {
       className="focus-visible:ring-fg/40 grid gap-0 outline-none focus-visible:ring-2 focus-visible:ring-inset lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]"
     >
       <div className="border-border flex min-h-[22rem] flex-col border-b lg:border-r lg:border-b-0">
-        <div className="flex-1 p-4 sm:p-5">{step && <Viz state={step.panels} />}</div>
+        <motion.div
+          className="relative flex-1 p-4 sm:p-5"
+          animate={{ boxShadow: glow }}
+          transition={{ duration: 0.5 }}
+        >
+          <span className="text-fg-subtle absolute top-3 right-4 font-mono text-[10px] tabular-nums">
+            step {playback.index + 1}
+            {playback.playing && <span className="text-brand animate-blink ml-1">●</span>}
+          </span>
+          {step && <Viz state={step.panels} />}
+        </motion.div>
 
         <div className="border-border bg-surface-2 border-t px-4 py-3 sm:px-5" aria-live="polite">
           <AnimatePresence mode="wait" initial={false}>
@@ -85,7 +103,7 @@ export function PlayerStage({ steps, code, markers }: PlayerStageProps) {
         </div>
 
         <div className="border-border border-t p-4 sm:px-5">
-          <PlayerControls playback={playback} count={steps.length} />
+          <PlayerControls playback={playback} steps={steps} />
         </div>
       </div>
 
