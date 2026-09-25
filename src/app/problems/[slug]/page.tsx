@@ -14,15 +14,15 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Viz } from "@/components/viz/Viz";
 import { highlight } from "@/lib/code/highlight";
 import { resolveMarkers } from "@/lib/markers";
-import { catalog } from "@/content/catalog";
-import { getCatalogItem, getProblem } from "@/lib/problems";
+import { getProblem } from "@/lib/get-problem";
+import { catalogItems, getCatalogItem } from "@/lib/problems";
 import { absUrl, leetcodeUrl, site } from "@/lib/site";
 import { isProblemType, LANGUAGES, topicLabel, type Problem } from "@/lib/types";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return catalog.map((p) => ({ slug: p.slug }));
+  return catalogItems.filter((p) => p.available).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({
