@@ -10,10 +10,11 @@ import { cn } from "@/lib/utils";
 /** Primary nav with a sliding underline that follows the active view. */
 export function HeaderNav() {
   const pathname = usePathname();
+  const path = pathname.replace(/\/+$/, "") || "/";
   const [params, setParams] = useUrlSearch();
-  const onList = pathname === "/";
+  const onList = path === "/";
   const animatedOnly = onList && params.get("available") === "1";
-  const slug = pathname.startsWith("/problems/") ? pathname.split("/").pop() : null;
+  const slug = path.startsWith("/problems/") ? path.slice("/problems/".length) : null;
 
   const links = [
     { key: "all", href: "/", label: "Problems", active: onList && !animatedOnly, available: false },

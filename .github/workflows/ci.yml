@@ -1,20 +1,25 @@
 name: CI
 
 on:
+  pull_request:
   push:
     branches: [main]
-  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# PRs and main get a read-only quality gate. Publishing lives in pages.yml.
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-node@v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -28,4 +33,5 @@ jobs:
         with:
           name: site
           path: out
+          if-no-files-found: error
           retention-days: 7

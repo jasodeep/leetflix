@@ -80,13 +80,42 @@ Routes, the table's ▶ status, the difficulty ring and the sitemap derive from 
 
 ## Deploying
 
-`npm run build` writes `out/`. Set `NEXT_PUBLIC_SITE_URL` at build time so canonical URLs, Open Graph and the sitemap point at the right origin:
+`npm run build` writes `out/`. Set `NEXT_PUBLIC_SITE_URL` at build time so canonical URLs, Open Graph and the sitemap point at the right origin. Project sites also need `NEXT_PUBLIC_BASE_PATH=/<repo>` so asset URLs match `https://<user>.github.io/<repo>/`:
 
 ```bash
 NEXT_PUBLIC_SITE_URL=https://leetflix.example.com npm run build
 ```
 
 Serve `out/` from GitHub Pages, Cloudflare Pages, Netlify, S3 + CloudFront, nginx — anything that serves files.
+
+### GitHub Pages
+
+Pushes to `main` run [`.github/workflows/pages.yml`](.github/workflows/pages.yml): quality gates, a production export, then an orphan commit of `out/` onto the `release` branch. That branch is the published site — no source, no `node_modules`.
+
+One-time repo settings:
+
+1. **Actions → General → Workflow permissions** → Read and write. The token has to push `release`.
+2. **Pages → Build and deployment**
+   - Source: **Deploy from a branch**
+   - Branch: **`release` / `/ (root)`**
+3. (Optional) Create the empty **Environments → `github-pages`** environment if you want required reviewers before a publish.
+
+The first green `Pages` run creates `release`. After that the site is:
+
+- Project repo: `https://<user>.github.io/<repo>/`
+- User/org site (`<user>.github.io` repo): `https://<user>.github.io/`
+
+Optional repository variables (Actions → Variables) if you put a custom domain in front:
+
+| Variable      | Example                | Purpose                                |
+| ------------- | ---------------------- | -------------------------------------- |
+| `SITE_URL`    | `https://leetflix.dev` | Canonical origin baked into the export |
+| `BASE_PATH`   | _(empty)_              | Leave blank on an apex domain          |
+| `PAGES_CNAME` | `leetflix.dev`         | Writes a `CNAME` file into `release`   |
+
+Manual republish: Actions → **Pages** → Run workflow.
+
+`CI` still runs on every PR (and on `main`) and uploads `out/` as a 7-day artifact. It never writes `release`.
 
 ## Status
 

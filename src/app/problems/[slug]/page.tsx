@@ -15,7 +15,7 @@ import { Viz } from "@/components/viz/Viz";
 import { highlight } from "@/lib/code/highlight";
 import { resolveMarkers } from "@/lib/markers";
 import { getAllProblems, getCatalogItem, getProblem } from "@/lib/problems";
-import { leetcodeUrl, site } from "@/lib/site";
+import { absUrl, leetcodeUrl, site } from "@/lib/site";
 import { LANGUAGES, type Problem } from "@/lib/types";
 
 export const dynamicParams = false;
@@ -35,12 +35,12 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: { canonical: `${site.url}/problems/${problem.slug}` },
+    alternates: { canonical: absUrl(`/problems/${problem.slug}`) },
     openGraph: {
       title: `${title} · ${site.name}`,
       description,
       type: "article",
-      url: `${site.url}/problems/${problem.slug}`,
+      url: absUrl(`/problems/${problem.slug}`),
     },
   };
 }
@@ -98,7 +98,7 @@ export default async function ProblemPage({ params }: PageProps<"/problems/[slug
     proficiencyLevel: problem.difficulty,
     keywords: problem.topics.join(", "),
     programmingLanguage: ["Python", "Go"],
-    url: `${site.url}/problems/${problem.slug}`,
+    url: absUrl(`/problems/${problem.slug}`),
     publisher: { "@type": "Organization", name: site.name },
   };
 

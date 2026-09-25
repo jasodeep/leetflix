@@ -9,3 +9,10 @@ export const site = {
 } as const;
 
 export const leetcodeUrl = (slug: string): string => `https://leetcode.com/problems/${slug}/`;
+
+/** Absolute URL for a site-relative path. Matches `trailingSlash: true`. */
+export const absUrl = (path = "/"): string => {
+  const normalised = path.replace(/\/+$/, "") || "/";
+  if (normalised === "/") return `${site.url}/`;
+  return `${site.url}${normalised.startsWith("/") ? normalised : `/${normalised}`}/`;
+};

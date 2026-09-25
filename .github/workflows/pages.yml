@@ -1,0 +1,110 @@
+# Publish the static export to the `release` branch for GitHub Pages.
+#
+# Design:
+#   main  →  quality gates  →  production build  →  orphan commit on `release`
+#
+# `release` is an artifact branch, not a development branch. Each deploy
+# replaces it (force_orphan) so the branch never accumulates source or
+# node_modules, and a broken publish cannot leave a half-written tree.
+#
+# Enable once in the repo:
+#   Settings → Pages → Build and deployment
+#     Source: Deploy from a branch
+#     Branch: release / (root)
+#   Settings → Actions → General → Workflow permissions
+#     Read and write (GITHUB_TOKEN must be able to push `release`)
+#
+# Optional repository variables (Settings → Secrets and variables → Actions):
+#   SITE_URL      https://leetflix.dev          custom canonical origin
+#   BASE_PATH     (empty on a custom domain)    Next.js basePath override
+#   PAGES_CNAME   leetflix.dev                  writes CNAME into the export
+#
+# This workflow never runs on `release`. A loop is impossible: it only
+# listens to `main`, and the publish is a clean tree with no workflows.
+
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: Why republish the release branch
+        required: false
+        type: string
+
+concurrency:
+  group: pages-release
+  cancel-in-progress: false
+
+# Least privilege at workflow scope; the publish job elevates contents:write.
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.meta.outputs.url }}
+    permissions:
+      contents: write
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Quality gates
+        run: npm run check
+
+      - name: Resolve public URL
+        id: meta
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          BASE_PATH: ${{ vars.BASE_PATH }}
+        run: node scripts/github-pages-meta.mjs >> "$GITHUB_OUTPUT"
+
+      - name: Build static export
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ steps.meta.outputs.url }}
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.meta.outputs.base_path }}
+        run: npm run build
+
+      - name: Verify export
+        run: |
+          set -euo pipefail
+          test -f out/index.html
+          test -f out/.nojekyll
+          test -d out/_next
+          echo "kind=${{ steps.meta.outputs.kind }} url=${{ steps.meta.outputs.url }} basePath=${{ steps.meta.outputs.base_path }}"
+
+      - name: Publish to release
+        uses: peaceiris/actions-gh-pages@v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: release
+          publish_dir: ./out
+          force_orphan: true
+          enable_jekyll: false
+          cname: ${{ vars.PAGES_CNAME }}
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_message: |
+            deploy ${{ github.sha }}
+
+            Source: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            ${{ github.event_name == 'workflow_dispatch' && format('Reason: {0}', inputs.reason) || '' }}

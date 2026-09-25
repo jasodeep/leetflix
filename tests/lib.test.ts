@@ -2,8 +2,17 @@ import { describe, expect, it } from "vitest";
 
 import { InputParseError, LIMITS, parseField, parseInputs } from "@/lib/inputs";
 import { resolveMarkers } from "@/lib/markers";
+import { absUrl } from "@/lib/site";
 import { slugify } from "@/lib/utils";
 import { Recorder, StepLimitError, MAX_STEPS } from "@/lib/viz/recorder";
+
+describe("absUrl", () => {
+  it("emits trailing slashes so GitHub Pages directory indexes resolve", () => {
+    expect(absUrl("/")).toBe("https://leetflix.dev/");
+    expect(absUrl("/problems/two-sum")).toBe("https://leetflix.dev/problems/two-sum/");
+    expect(absUrl("/problems/two-sum/")).toBe("https://leetflix.dev/problems/two-sum/");
+  });
+});
 
 describe("slugify", () => {
   it("matches LeetCode conventions", () => {

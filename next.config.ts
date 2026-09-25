@@ -4,10 +4,19 @@ import type { NextConfig } from "next";
  * Leetflix is a pure front-end: every route is prerendered at build time and
  * the `out/` directory can be served from any static host (GitHub Pages,
  * Cloudflare Pages, S3, nginx, ...).
+ *
+ * `trailingSlash: true` emits `problems/foo/index.html` so GitHub Pages (a
+ * plain file server) can serve `/problems/foo/` without a rewrite layer.
+ *
+ * `basePath` is empty locally and on a custom domain; the Pages workflow sets
+ * `NEXT_PUBLIC_BASE_PATH=/<repo>` for project sites (user.github.io/repo).
  */
+const basePath = (process.env.NEXT_PUBLIC_BASE_PATH ?? "").replace(/\/+$/, "");
+
 const nextConfig: NextConfig = {
   output: "export",
-  trailingSlash: false,
+  trailingSlash: true,
+  ...(basePath ? { basePath, assetPrefix: basePath } : {}),
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
