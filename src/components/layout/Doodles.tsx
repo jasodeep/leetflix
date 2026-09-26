@@ -3,16 +3,31 @@
 function Spark({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   const a = 3 * s;
   const b = 10 * s;
-  return <path d={`M${x} ${y} l${a} ${b} ${b} ${a} -${b} ${a} -${a} ${b} -${a}-${b} -${b}-${a} ${b}-${a}z`} />;
+  return (
+    <path
+      d={`M${x} ${y} l${a} ${b} ${b} ${a} -${b} ${a} -${a} ${b} -${a}-${b} -${b}-${a} ${b}-${a}z`}
+    />
+  );
 }
 
 export function Doodles() {
   return (
-    <svg className="doodles" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden>
+    <svg
+      className="doodles"
+      viewBox="0 0 1440 900"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden
+    >
       <defs>
         <filter id="doodle-lift" x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="0" dy="0.6" stdDeviation="0.35" floodColor="#fff" floodOpacity="0.28" />
-          <feDropShadow dx="0.7" dy="1.4" stdDeviation="0.85" floodColor="#000" floodOpacity="0.38" />
+          <feDropShadow
+            dx="0.7"
+            dy="1.4"
+            stdDeviation="0.85"
+            floodColor="#000"
+            floodOpacity="0.38"
+          />
         </filter>
       </defs>
       <g
@@ -28,7 +43,10 @@ export function Doodles() {
           d="M70 830 C 200 770, 260 690, 340 630 S 500 510, 620 550 S 800 690, 960 650 S 1180 500, 1380 540"
         />
         <path className="doodle-dash" d="M40 210 C 160 180, 220 260, 180 320 S 80 400, 130 470" />
-        <path className="doodle-dash" d="M1280 40 C 1340 120, 1260 180, 1320 260 S 1400 340, 1350 420" />
+        <path
+          className="doodle-dash"
+          d="M1280 40 C 1340 120, 1260 180, 1320 260 S 1400 340, 1350 420"
+        />
 
         <g className="doodle-twinkle">
           <Spark x={118} y={88} />
@@ -48,7 +66,10 @@ export function Doodles() {
           <g transform="translate(42 96)">
             <path d="M22 4 v10" />
             <path d="M8 14 h28" />
-            <path className="doodle-drip" d="M10 18 l-3 10 M16 18 l-1 11 M22 18 v12 M28 18 l1 11 M34 18 l3 10" />
+            <path
+              className="doodle-drip"
+              d="M10 18 l-3 10 M16 18 l-1 11 M22 18 v12 M28 18 l1 11 M34 18 l3 10"
+            />
           </g>
         </g>
         {/* Psycho — house on the hill */}

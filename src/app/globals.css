@@ -471,10 +471,7 @@
     height: 68%;
     opacity: 0.5;
     background-image:
-      linear-gradient(
-        color-mix(in oklab, var(--color-fg) 10%, transparent) 1px,
-        transparent 1px
-      ),
+      linear-gradient(color-mix(in oklab, var(--color-fg) 10%, transparent) 1px, transparent 1px),
       linear-gradient(
         90deg,
         color-mix(in oklab, var(--color-fg) 10%, transparent) 1px,
