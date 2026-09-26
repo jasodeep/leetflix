@@ -18,18 +18,35 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: actions/setup-node@v4.4.0
+      - name: Check out
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run format:check
-      - run: npm run build
-      - uses: actions/upload-artifact@v4
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Types
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Format
+        run: npm run format:check
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload export
+        uses: actions/upload-artifact@v4
         with:
           name: site
           path: out

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { catalogItems } from "@/lib/problems";
+import { catalogItems } from "@/lib/catalog";
 import { SEO_HUBS, SITE_UPDATED } from "@/lib/seo";
 import { absUrl } from "@/lib/site";
 

@@ -2,9 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { catalog } from "@/content/catalog";
 import { FAMILY_IDS, familyOf, familyTraces, materialize, slugToFn } from "@/content/families";
-import { getProblem } from "@/lib/get-problem";
 import { loadTraces } from "@/content/traces";
-import { catalogItems } from "@/lib/problems";
+import { catalogItems, getProblem } from "@/lib/catalog";
 import { problems } from "@/content/problems";
 import { SOLVED_SLUGS } from "@/content/solvers/pick";
 import { FAMILY_APPROACH, FAMILY_INPUTS } from "@/content/families/solutions";

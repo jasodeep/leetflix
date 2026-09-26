@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { ProblemTable } from "@/components/problems/ProblemTable";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SeoHidden } from "@/components/seo/SeoHidden";
-import { catalogItems, getCatalogItem } from "@/lib/problems";
+import { catalogItems, getCatalogItem } from "@/lib/catalog";
 import { FEATURED_SLUGS, jsonLdFaq, jsonLdItemList } from "@/lib/seo";
 import { absUrl, site } from "@/lib/site";
 

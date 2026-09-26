@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { catalog } from "@/content/catalog";
+import { parseCatalog } from "@/content/parse-catalog";
 import { problems } from "@/content/problems";
 import { loadTraces, traceLoaders } from "@/content/traces";
+import { CatalogError } from "@/lib/errors";
 import { parseInputs, defaultRawInputs } from "@/lib/inputs";
 import { resolveMarkers } from "@/lib/markers";
 import { isMethod, isProblemType, LANGUAGES } from "@/lib/types";
@@ -34,6 +36,17 @@ describe("catalog", () => {
         expect(isProblemType(t) || isMethod(t), `${c.slug} tag ${t}`).toBe(true);
       }
     }
+  });
+
+  it("rejects a corrupt dump", () => {
+    expect(() => parseCatalog({})).toThrow(CatalogError);
+    expect(() => parseCatalog([{ id: 1 }])).toThrow(/slug/);
+    expect(() =>
+      parseCatalog([
+        { id: 1, slug: "two-sum", title: "Two Sum", difficulty: "Easy", topics: ["Array"] },
+        { id: 1, slug: "other", title: "Other", difficulty: "Easy", topics: ["Array"] },
+      ]),
+    ).toThrow(/duplicate catalog id/);
   });
 });
 

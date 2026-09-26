@@ -1,3 +1,5 @@
+import { publicEnv } from "@/lib/env";
+
 /** Site-wide constants. `NEXT_PUBLIC_SITE_URL` lets the static export be hosted anywhere. */
 export const site = {
   name: "Leetflix",
@@ -6,10 +8,7 @@ export const site = {
   description:
     "Practice LeetCode and coding interviews with the full problem catalogue, explained Python and Go solutions, and step-by-step algorithm animations.",
   titleDefault: "Leetflix — LeetCode solutions, algorithm visualizations, interview prep",
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://jasodeep.github.io/leetflix").replace(
-    /\/$/,
-    "",
-  ),
+  url: publicEnv.siteUrl,
   github: "https://github.com/jasodeep/leetflix",
   locale: "en_US",
   localeBcp47: "en-US",

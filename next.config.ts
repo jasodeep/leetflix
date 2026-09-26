@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+import { publicEnv } from "./src/lib/env";
+
 /**
  * Leetflix is a pure front-end: every route is prerendered at build time and
  * the `out/` directory can be served from any static host (GitHub Pages,
@@ -11,7 +13,7 @@ import type { NextConfig } from "next";
  * `basePath` is empty locally and on a custom domain; the Pages workflow sets
  * `NEXT_PUBLIC_BASE_PATH=/<repo>` for project sites (user.github.io/repo).
  */
-const basePath = (process.env.NEXT_PUBLIC_BASE_PATH ?? "").replace(/\/+$/, "");
+const basePath = publicEnv.basePath;
 
 const nextConfig: NextConfig = {
   output: "export",

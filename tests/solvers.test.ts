@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { catalog } from "@/content/catalog";
 import { problems } from "@/content/problems";
 import { materialize, SOLVER_SLUGS, SOLVERS, solverOf } from "@/content/solvers";
-import { catalogItems } from "@/lib/problems";
+import { catalogItems } from "@/lib/catalog";
 import { defaultRawInputs, parseInputs } from "@/lib/inputs";
 import { resolveMarkers } from "@/lib/markers";
 import { LANGUAGES } from "@/lib/types";

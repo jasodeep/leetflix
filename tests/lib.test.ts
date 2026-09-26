@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { InputParseError, LIMITS, parseField, parseInputs } from "@/lib/inputs";
+import { InputParseError, MarkerError } from "@/lib/errors";
+import { LIMITS, parseField, parseInputs } from "@/lib/inputs";
 import { resolveMarkers } from "@/lib/markers";
 import { absUrl, site } from "@/lib/site";
 import { slugify } from "@/lib/utils";
@@ -36,11 +37,12 @@ describe("resolveMarkers", () => {
   });
 
   it("throws on missing markers", () => {
+    expect(() => resolveMarkers({ source, markers: { nope: "while" } })).toThrow(MarkerError);
     expect(() => resolveMarkers({ source, markers: { nope: "while" } })).toThrow(/not found/);
   });
 
   it("throws on ambiguous markers", () => {
-    expect(() => resolveMarkers({ source, markers: { amb: "a" } })).toThrow(/ambiguous/);
+    expect(() => resolveMarkers({ source, markers: { amb: "a" } })).toThrow(MarkerError);
   });
 });
 

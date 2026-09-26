@@ -1,0 +1,21 @@
+name: Feature
+description: A concrete improvement to the catalogue, player, or docs.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      placeholder: What is painful or missing today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      placeholder: What should change? Keep it one concern.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: Hand-authored problems need Python, Go, and a trace. See [CONTRIBUTING.md](https://github.com/jasodeep/leetflix/blob/main/CONTRIBUTING.md).

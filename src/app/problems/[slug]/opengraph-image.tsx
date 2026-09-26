@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 import { problems } from "@/content/problems";
 import { SOLVED_SLUGS } from "@/content/solvers/pick";
-import { getProblem } from "@/lib/get-problem";
+import { getProblem } from "@/lib/catalog";
 
 export const dynamic = "force-static";
 export const alt = "Leetflix animated LeetCode solution";

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { catalogItems } from "@/lib/problems";
+import { catalogItems } from "@/lib/catalog";
 import {
   catalogStats,
   FEATURED_SLUGS,

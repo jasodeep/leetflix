@@ -1,4 +1,4 @@
-import { catalogItems } from "@/lib/problems";
+import { catalogItems } from "@/lib/catalog";
 import { absUrl, leetcodeUrl, site } from "@/lib/site";
 import {
   DIFFICULTIES,

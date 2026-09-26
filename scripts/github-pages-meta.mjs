@@ -14,6 +14,12 @@ import { pathToFileURL } from "node:url";
 
 const trimSlash = (s) => s.replace(/\/+$/, "");
 
+/**
+ * @typedef {{ owner: string, repo: string, siteUrl?: string, basePath?: string }} PagesInput
+ * @typedef {{ url: string, basePath: string, kind: "custom" | "user" | "project" }} PagesMeta
+ */
+
+/** @param {PagesInput} input @returns {PagesMeta} */
 export function resolvePagesMeta({ owner, repo, siteUrl = "", basePath = "" }) {
   if (!owner || !repo) {
     throw new Error("owner and repo are required to resolve GitHub Pages URLs");

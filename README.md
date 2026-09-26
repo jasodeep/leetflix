@@ -74,13 +74,13 @@ Each animation is the algorithm, not a slideshow. The red line follows the curre
   </sup>
 </p>
 
-| Key | What it does |
-| :-- | :----------- |
-| Space | Play or pause |
-| ← → | Step backward or forward |
-| Home / End | Jump to the first or last step |
-| / | Focus search on the problem list |
-| J / K | Move down or up the list |
+| Key        | What it does                     |
+| :--------- | :------------------------------- |
+| Space      | Play or pause                    |
+| ← →        | Step backward or forward         |
+| Home / End | Jump to the first or last step   |
+| /          | Focus search on the problem list |
+| J / K      | Move down or up the list         |
 
 ---
 
@@ -96,11 +96,11 @@ The home page is a table, like LeetCode. Filters stay in the URL, so you can sha
 
 Every problem page has three parts:
 
-| Section | What you see |
-| :------ | :----------- |
-| **Problem** | Statement, constraints, and examples |
-| **Solution** | Why it works, then Python and Go (tabs if there is more than one approach) |
-| **Walkthrough** | The interactive animation — edit the input and press Run |
+| Section         | What you see                                                               |
+| :-------------- | :------------------------------------------------------------------------- |
+| **Problem**     | Statement, constraints, and examples                                       |
+| **Solution**    | Why it works, then Python and Go (tabs if there is more than one approach) |
+| **Walkthrough** | The interactive animation — edit the input and press Run                   |
 
 ---
 
@@ -119,13 +119,13 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-| Command | What it does |
-| :------ | :----------- |
-| `npm run dev` | Local site with live reload |
-| `npm test` | Unit tests |
+| Command         | What it does                                    |
+| :-------------- | :---------------------------------------------- |
+| `npm run dev`   | Local site with live reload                     |
+| `npm test`      | Unit tests                                      |
 | `npm run check` | Lint, types, tests, and formatting — same as CI |
-| `npm run build` | Static site in `out/` |
-| `npm start` | Serve that export |
+| `npm run build` | Static site in `out/`                           |
+| `npm start`     | Serve that export                               |
 
 To match GitHub Pages locally:
 
@@ -134,6 +134,18 @@ NEXT_PUBLIC_SITE_URL=https://jasodeep.github.io/leetflix \
 NEXT_PUBLIC_BASE_PATH=/leetflix \
 npm run build && npm start
 ```
+
+---
+
+## Project
+
+| Doc                                   | What it is                               |
+| :------------------------------------ | :--------------------------------------- |
+| [Contributing](CONTRIBUTING.md)       | Setup, `npm run check`, adding a problem |
+| [Architecture](docs/ARCHITECTURE.md)  | Static export, catalogue resolution, CI  |
+| [Changelog](CHANGELOG.md)             | User-visible changes                     |
+| [Security](SECURITY.md)               | How to report a vulnerability            |
+| [Code of conduct](CODE_OF_CONDUCT.md) | How we work together                     |
 
 ---
 

@@ -1,3 +1,4 @@
+import { MarkerError } from "@/lib/errors";
 import type { SolutionCode } from "@/lib/types";
 
 export type ResolvedMarkers = Record<string, number>;
@@ -19,14 +20,18 @@ export function resolveMarkers(code: SolutionCode, context = "solution"): Resolv
       if (line.includes(needle)) hits.push(i + 1);
     });
     if (hits.length === 0) {
-      throw new Error(`[${context}] marker "${name}" not found: ${JSON.stringify(needle)}`);
+      throw new MarkerError(`[${context}] marker "${name}" not found: ${JSON.stringify(needle)}`);
     }
     if (hits.length > 1) {
-      throw new Error(
+      throw new MarkerError(
         `[${context}] marker "${name}" is ambiguous (lines ${hits.join(", ")}): ${JSON.stringify(needle)}`,
       );
     }
-    resolved[name] = hits[0];
+    const line = hits[0];
+    if (line === undefined) {
+      throw new MarkerError(`[${context}] marker "${name}" resolved without a line`);
+    }
+    resolved[name] = line;
   }
 
   return resolved;

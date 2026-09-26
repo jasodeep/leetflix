@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Live site
+    url: https://jasodeep.github.io/leetflix/
+    about: Try the catalogue and a walkthrough before filing.
+  - name: Security report
+    url: https://github.com/jasodeep/leetflix/security/advisories/new
+    about: Private vulnerability reporting — do not open a public issue.

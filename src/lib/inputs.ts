@@ -1,15 +1,8 @@
+import { InputParseError } from "@/lib/errors";
 import type { InputField, InputFieldType } from "@/lib/types";
 import type { TraceInput } from "@/lib/viz/types";
 
-export class InputParseError extends Error {
-  constructor(
-    public readonly field: string,
-    message: string,
-  ) {
-    super(message);
-    this.name = "InputParseError";
-  }
-}
+export { InputParseError };
 
 /** Upper bounds keep animations legible and step counts bounded. */
 export const LIMITS = {
