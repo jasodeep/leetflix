@@ -3,6 +3,30 @@
   "version": "0.1.0",
   "private": true,
   "description": "LeetCode problem catalogue with explained Python and Go solutions and interactive algorithm animations for coding interview prep.",
+  "license": "MIT",
+  "author": "Jasodeep Chatterjee",
+  "homepage": "https://jasodeep.github.io/leetflix/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasodeep/leetflix.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jasodeep/leetflix/issues"
+  },
+  "keywords": [
+    "leetcode",
+    "leetcode-solutions",
+    "algorithms",
+    "algorithm-visualization",
+    "interview-prep",
+    "coding-interview",
+    "data-structures",
+    "dsa",
+    "python",
+    "golang",
+    "nextjs",
+    "typescript"
+  ],
   "engines": {
     "node": ">=20.19.0"
   },

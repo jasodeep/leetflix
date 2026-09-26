@@ -1,6 +1,7 @@
 /* TEAM */
   Developer: Jasodeep Chatterjee
-  Site: https://github.com/jasodeep/leetflix
+  Site: https://jasodeep.github.io/leetflix/
+  GitHub: https://github.com/jasodeep/leetflix
 
 /* SITE */
   Last update: 2026-09-26

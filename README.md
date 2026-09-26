@@ -1,11 +1,15 @@
 <div align="center">
 
-<img src="docs/brand/logo.png" alt="LEETFLIX" width="520" />
+<img src="docs/brand/logo.png" alt="Leetflix — LeetCode solutions and algorithm visualizations" width="520" />
 
 `WATCH.CODE.REPEAT_`
 
-**algorithms, streamed.** a Netflix-parody LeetCode catalogue — Python + Go,
-step-debug animations, zero backend.
+**LeetCode solutions, algorithm visualizations, and coding interview prep.**  
+The full LeetCode catalogue — explained **Python** and **Go** solutions, step-by-step
+DSA animations, static site, zero backend.
+
+Live: **[jasodeep.github.io/leetflix](https://jasodeep.github.io/leetflix/)** ·
+Source: **[github.com/jasodeep/leetflix](https://github.com/jasodeep/leetflix)**
 
 <br/>
 
@@ -16,14 +20,25 @@ step-debug animations, zero backend.
 
 [![ci](https://img.shields.io/github/actions/workflow/status/jasodeep/leetflix/ci.yml?style=flat-square&label=ci&labelColor=111113)](https://github.com/jasodeep/leetflix/actions/workflows/ci.yml)
 [![pages](https://img.shields.io/github/actions/workflow/status/jasodeep/leetflix/pages.yml?style=flat-square&label=pages&labelColor=111113)](https://github.com/jasodeep/leetflix/actions/workflows/pages.yml)
+[![license](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square&labelColor=111113)](LICENSE)
 [![next](https://img.shields.io/badge/next-16_static_export-black?style=flat-square&labelColor=111113)](https://nextjs.org/)
 [![ts](https://img.shields.io/badge/typescript-strict-3178C6?style=flat-square&labelColor=111113)](https://www.typescriptlang.org/)
 [![node](https://img.shields.io/badge/node-%3E%3D20.19-22c55e?style=flat-square&labelColor=111113)](#local-setup)
 
+Topics:
+[leetcode](https://github.com/topics/leetcode) ·
+[algorithms](https://github.com/topics/algorithms) ·
+[interview-prep](https://github.com/topics/interview-prep) ·
+[data-structures](https://github.com/topics/data-structures) ·
+[visualization](https://github.com/topics/visualization) ·
+[python](https://github.com/topics/python) ·
+[golang](https://github.com/topics/golang) ·
+[dsa](https://github.com/topics/dsa)
+
 ```
-┌─────────┬──────────┬──────────┬──────────┐
-│ CATALOG │ 150 eps  │ 11 live  │ py + go  │
-└─────────┴──────────┴──────────┴──────────┘
+┌──────────┬───────────┬──────────┬────────────┐
+│ 4060 LC  │ 3276 free │ python   │ go + viz   │
+└──────────┴───────────┴──────────┴────────────┘
 ```
 
 </div>
@@ -74,8 +89,8 @@ edit the input. hit **run**. `space` plays, `←` `→` steps, `home` / `end` sk
 
 ## `>_ ls /`
 
-home is a LeetCode-style table, not a streaming shelf. **▶** means the episode
-has a full deep-dive. everything else deep-links to LeetCode until it airs.
+home is a LeetCode-style problem list. every **free** question has Python, Go,
+and an animated walkthrough. premium / locked rows deep-link to LeetCode.
 
 <p align="center">
   <a href="https://jasodeep.github.io/leetflix/">
@@ -147,8 +162,8 @@ output    export → orphan branch `release` → github pages
 ```
 browse ──► /problems/<slug> ──► player
   table        statement            viz snapshot
-  150 rows     py / go              instruction pointer
-               insights             space / ← → / scrub
+  4060 rows    py / go              instruction pointer
+  3276 free    insights             space / ← → / scrub
 ```
 
 <details>
@@ -217,6 +232,8 @@ optional vars for a custom domain: `SITE_URL`, `BASE_PATH`, `PAGES_CNAME`.
 problem statements © their respective owners
 
 <br/>
+
+**LeetCode · DSA · interview prep · algorithm visualization**
 
 [**▶ jasodeep.github.io/leetflix**](https://jasodeep.github.io/leetflix/)
 
