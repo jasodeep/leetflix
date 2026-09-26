@@ -1,0 +1,11 @@
+/* TEAM */
+  Developer: Jasodeep Chatterjee
+  Site: https://jasodeep.github.io/leetflix/
+  GitHub: https://github.com/jasodeep/leetflix
+
+/* SITE */
+  Last update: 2026-09-26
+  Language: English
+  Standards: HTML5, JSON-LD, Open Graph
+  Software: Next.js static export
+  Doctype: HTML5

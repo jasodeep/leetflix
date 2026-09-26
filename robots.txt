@@ -1,0 +1,6 @@
+User-Agent: *
+Allow: /
+Disallow: /*?*
+
+Host: https://jasodeep.github.io/leetflix
+Sitemap: https://jasodeep.github.io/leetflix/sitemap.xml
