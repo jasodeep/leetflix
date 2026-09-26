@@ -154,11 +154,16 @@ export function ProblemTable({ items }: ProblemTableProps) {
               )}
             </span>
           </label>
-
-          <AvailableSwitch checked={query.available} onChange={(v) => update({ available: v })} />
         </div>
 
-        <div className="border-border bg-surface/80 divide-border/80 rounded-card divide-y border shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_56px_-36px_rgba(229,9,20,0.3)] backdrop-blur-sm">
+        <div
+          className="border-border bg-surface/80 divide-border/80 rounded-card filter-glow pointer-glow relative divide-y border backdrop-blur-sm"
+          onPointerMove={(e) => {
+            const r = e.currentTarget.getBoundingClientRect();
+            e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+            e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+          }}
+        >
           <FilterRail
             label="Difficulty"
             icon={Gauge}
@@ -232,7 +237,7 @@ export function ProblemTable({ items }: ProblemTableProps) {
         role="table"
         aria-label="Problems"
         aria-rowcount={page.total}
-        className="pointer-glow rounded-card border-border bg-surface/80 relative scroll-mt-20 border shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_24px_80px_-40px_rgba(229,9,20,0.35)] backdrop-blur-sm"
+        className="pointer-glow rounded-card border-border bg-surface/80 relative scroll-mt-20 border shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_24px_80px_-40px_rgba(229,9,20,0.45),0_0_90px_-48px_rgba(167,139,250,0.28)] backdrop-blur-sm"
         onMouseLeave={() => setCursor(-1)}
         onMouseMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect();
@@ -363,45 +368,6 @@ function SortHeader({
   );
 }
 
-function AvailableSwitch({
-  checked,
-  onChange,
-}: {
-  checked: boolean;
-  onChange: (v: boolean) => void;
-}) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className={cn(
-        "border-border bg-surface hover:border-border-strong flex h-10 items-center gap-2.5 rounded-md border px-3 text-xs font-medium transition-colors",
-        checked ? "text-fg" : "text-fg-muted",
-      )}
-    >
-      <span
-        className={cn(
-          "relative flex h-4 w-7 items-center rounded-full transition-colors",
-          checked ? "bg-brand" : "bg-border-strong",
-        )}
-        aria-hidden
-      >
-        <motion.span
-          layout
-          transition={spring}
-          className={cn(
-            "absolute size-3 rounded-full bg-white shadow",
-            checked ? "right-0.5" : "left-0.5",
-          )}
-        />
-      </span>
-      Animated only
-    </button>
-  );
-}
-
 const difficultyDot: Record<Difficulty, string> = {
   Easy: "bg-easy",
   Medium: "bg-medium",
@@ -468,16 +434,18 @@ function FilterRail<T extends string>({
       );
     }
     return (
-      <button
+      <motion.button
         key={key}
         type="button"
         role="radio"
         aria-checked={active}
         onClick={onClick}
+        whileHover={{ y: -1 }}
+        whileTap={{ scale: 0.96 }}
         className={className}
       >
         {body}
-      </button>
+      </motion.button>
     );
   };
 

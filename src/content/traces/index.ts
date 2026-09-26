@@ -1,3 +1,5 @@
+import { catalog } from "@/content/catalog";
+import { familyOf, familyTraces } from "@/content/families";
 import { solverOf } from "@/content/solvers";
 import type { TraceModule } from "@/lib/viz/types";
 
@@ -22,10 +24,14 @@ export const traceLoaders: Record<string, Loader> = {
   "trapping-rain-water": () => import("./trapping-rain-water"),
 };
 
+const catalogBySlug = new Map(catalog.map((c) => [c.slug, c]));
+
 export async function loadTraces(slug: string): Promise<TraceModule> {
   const loader = traceLoaders[slug];
   if (loader) return (await loader()).default;
   const solver = solverOf(slug);
   if (solver) return solver.traces;
+  const entry = catalogBySlug.get(slug);
+  if (entry) return familyTraces(familyOf(entry.topics));
   throw new Error(`No trace module registered for "${slug}"`);
 }

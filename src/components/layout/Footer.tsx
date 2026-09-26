@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { LogoMark } from "@/components/brand/Logo";
+import { SeoHubLinks } from "@/components/seo/SeoHidden";
 import { site } from "@/lib/site";
 
 export function Footer() {
@@ -29,6 +30,7 @@ export function Footer() {
           owners.
         </p>
       </div>
+      <SeoHubLinks />
     </footer>
   );
 }

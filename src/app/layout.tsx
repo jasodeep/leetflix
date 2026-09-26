@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Inter, JetBrains_Mono } from "next/font/google";
 
+import { Atmosphere } from "@/components/layout/Atmosphere";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { jsonLdApp, jsonLdOrg, jsonLdWebsite } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 import "./globals.css";
@@ -23,37 +26,60 @@ const bebas = Bebas_Neue({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — ${site.tagline}`,
+    default: site.titleDefault,
     template: `%s · ${site.name}`,
   },
   description: site.description,
   applicationName: site.name,
-  keywords: [
-    "leetcode",
-    "algorithms",
-    "data structures",
-    "python",
-    "go",
-    "interview prep",
-    "visualization",
-  ],
+  authors: [{ name: site.author, url: site.github }],
+  creator: site.author,
+  publisher: site.name,
+  keywords: [...site.keywords],
+  category: "education",
+  referrer: "origin-when-cross-origin",
+  formatDetection: { telephone: false, email: false, address: false },
+  // Canonicals live on each route. A layout-level `/` canonical would
+  // collapse every child into the homepage in the index.
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
     type: "website",
     siteName: site.name,
-    title: `${site.name} — ${site.tagline}`,
+    locale: site.locale,
+    title: site.titleDefault,
     description: site.description,
-    url: site.url,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.name} — ${site.tagline}`,
+    title: site.titleDefault,
     description: site.description,
   },
-  robots: { index: true, follow: true },
+  appleWebApp: {
+    capable: true,
+    title: site.name,
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: [{ url: "/mark.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/logo.png" }],
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0b",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0b" },
+    { media: "(prefers-color-scheme: light)", color: "#0a0a0b" },
+  ],
   colorScheme: "dark",
 };
 
@@ -64,6 +90,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${jetbrains.variable} ${bebas.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <Atmosphere />
+        <JsonLd data={jsonLdOrg()} />
+        <JsonLd data={jsonLdWebsite()} />
+        <JsonLd data={jsonLdApp()} />
         <a
           href="#main"
           className="focus:bg-fg focus:text-bg sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:px-3 focus:py-2"

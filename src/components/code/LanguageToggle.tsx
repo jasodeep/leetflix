@@ -9,10 +9,13 @@ export function LanguageToggle({
   value,
   onChange,
   className,
+  layoutId = "lang-pill",
 }: {
   value: Language;
   onChange: (lang: Language) => void;
   className?: string;
+  /** Unique per instance so two toggles on one page don't share a flying pill. */
+  layoutId?: string;
 }) {
   return (
     <div
@@ -36,7 +39,7 @@ export function LanguageToggle({
           >
             {active && (
               <motion.span
-                layoutId="lang-pill"
+                layoutId={layoutId}
                 className="bg-fg absolute inset-0 rounded-[5px]"
                 transition={{ type: "spring", stiffness: 500, damping: 40 }}
                 aria-hidden

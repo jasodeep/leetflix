@@ -3,8 +3,7 @@ import { Clock, Database } from "lucide-react";
 import { SolutionCode, type HighlightedSolution } from "@/components/code/SolutionCode";
 import { InlineMarkdown } from "@/components/content/InlineMarkdown";
 import { RichText } from "@/components/content/RichText";
-import { highlight } from "@/lib/code/highlight";
-import { LANGUAGES, type Approach, type ApproachKind, type Language } from "@/lib/types";
+import type { Approach, ApproachKind, Language } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const kindLabel: Record<ApproachKind, { label: string; className: string }> = {
@@ -13,33 +12,27 @@ const kindLabel: Record<ApproachKind, { label: string; className: string }> = {
   alternative: { label: "Alternative", className: "border-viz-blue/50 text-viz-blue" },
 };
 
-export async function highlightApproach(
-  approach: Approach,
-): Promise<Record<Language, HighlightedSolution>> {
-  const entries = await Promise.all(
-    LANGUAGES.map(
-      async (lang) =>
-        [
-          lang,
-          {
-            source: approach.code[lang].source,
-            highlighted: await highlight(approach.code[lang].source, lang),
-          },
-        ] as const,
-    ),
-  );
-  return Object.fromEntries(entries) as Record<Language, HighlightedSolution>;
-}
-
-export async function ApproachSection({ approach, index }: { approach: Approach; index: number }) {
-  const code = await highlightApproach(approach);
+export function ApproachSection({
+  approach,
+  index,
+  code,
+  compact,
+}: {
+  approach: Approach;
+  index: number;
+  code: Record<Language, HighlightedSolution>;
+  /** Hide the "Approach N" kicker when a parent tab already names it. */
+  compact?: boolean;
+}) {
   const kind = kindLabel[approach.kind];
 
   return (
-    <article id={`approach-${approach.id}`} className="scroll-mt-24 space-y-6">
+    <article id={`approach-${approach.id}`} className="scroll-mt-32 space-y-6">
       <header className="space-y-2">
         <div className="flex flex-wrap items-center gap-2.5">
-          <span className="text-fg-subtle font-mono text-xs">Approach {index + 1}</span>
+          {!compact && (
+            <span className="text-fg-subtle font-mono text-xs">Approach {index + 1}</span>
+          )}
           <span
             className={cn(
               "rounded-sm border px-1.5 py-0.5 font-mono text-[10px] tracking-wider uppercase",
@@ -54,7 +47,9 @@ export async function ApproachSection({ approach, index }: { approach: Approach;
             </span>
           )}
         </div>
-        <h3 className="text-fg text-xl font-semibold tracking-tight">{approach.title}</h3>
+        {!compact && (
+          <h3 className="text-fg text-xl font-semibold tracking-tight">{approach.title}</h3>
+        )}
         <p className="prose-code text-fg-muted">
           <InlineMarkdown text={approach.summary} />
         </p>

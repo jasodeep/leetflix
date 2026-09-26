@@ -1,6 +1,5 @@
 import { catalog } from "@/content/catalog";
 import { problems } from "@/content/problems";
-import { SOLVED_SLUGS } from "@/content/solvers/pick";
 import type { CatalogItem, Problem } from "@/lib/types";
 
 /**
@@ -17,7 +16,7 @@ export type { CatalogItem };
 
 export const catalogItems: readonly CatalogItem[] = catalog.map((entry) => ({
   ...entry,
-  available: problemBySlug.has(entry.slug) || SOLVED_SLUGS.has(entry.slug),
+  available: !entry.premium,
 }));
 
 export const getAuthoredProblem = (slug: string) => problemBySlug.get(slug);

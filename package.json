@@ -2,7 +2,7 @@
   "name": "leetflix",
   "version": "0.1.0",
   "private": true,
-  "description": "A Netflix-style parody catalogue of LeetCode problems with deep-dive explanations, Python + Go solutions and interactive algorithm animations.",
+  "description": "LeetCode problem catalogue with explained Python and Go solutions and interactive algorithm animations for coding interview prep.",
   "engines": {
     "node": ">=20.19.0"
   },

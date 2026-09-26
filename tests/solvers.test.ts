@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { catalog } from "@/content/catalog";
 import { problems } from "@/content/problems";
-import { materialize, SOLVED_SLUGS, SOLVER_SLUGS, SOLVERS, solverOf } from "@/content/solvers";
+import { materialize, SOLVER_SLUGS, SOLVERS, solverOf } from "@/content/solvers";
 import { catalogItems } from "@/lib/problems";
 import { defaultRawInputs, parseInputs } from "@/lib/inputs";
 import { resolveMarkers } from "@/lib/markers";
@@ -24,13 +24,13 @@ describe("solvers", () => {
     }
   });
 
-  it("only real solvers (plus authored) are marked available", () => {
-    const playable = catalogItems.filter((c) => c.available);
-    expect(playable.length).toBe(problems.length + SOLVED_SLUGS.size);
+  it("every free catalogue row is playable; locked rows are not", () => {
+    expect(catalogItems.length).toBe(catalog.length);
     for (const row of catalogItems) {
-      const solved = problems.some((p) => p.slug === row.slug) || SOLVED_SLUGS.has(row.slug);
-      expect(row.available, row.slug).toBe(solved);
+      expect(row.available, row.slug).toBe(!row.premium);
     }
+    expect(catalogItems.filter((c) => c.available).length).toBeGreaterThan(3000);
+    expect(catalogItems.filter((c) => c.premium).length).toBeGreaterThan(0);
   });
 
   it("each solver materializes and has matching Python/Go markers", () => {

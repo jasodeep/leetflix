@@ -39,9 +39,12 @@
   --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
   --animate-ping-ring: ping-ring 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
   --animate-blink: blink 1.1s steps(2, start) infinite;
-  --animate-aurora: aurora 22s ease-in-out infinite alternate;
-  --animate-sheen: sheen 0.75s ease;
+  --animate-aurora: aurora 18s ease-in-out infinite;
+  --animate-sheen: sheen 0.85s ease;
   --animate-logo-breathe: logo-breathe 4.5s ease-in-out infinite;
+  --animate-scan: scan-line 9s linear infinite;
+  --animate-speck: speck-drift 11s ease-in-out infinite;
+  --animate-badge-glow: badge-glow 2.8s ease-in-out infinite;
 
   @keyframes pulse-soft {
     0%,
@@ -70,10 +73,16 @@
   }
   @keyframes aurora {
     0% {
-      transform: translate3d(0, 0, 0) scale(1);
+      transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    }
+    40% {
+      transform: translate3d(6%, 4%, 0) scale(1.12) rotate(2deg);
+    }
+    70% {
+      transform: translate3d(-3%, 6%, 0) scale(1.06) rotate(-1.5deg);
     }
     100% {
-      transform: translate3d(4%, 3%, 0) scale(1.08);
+      transform: translate3d(2%, -2%, 0) scale(1.1) rotate(1deg);
     }
   }
   @keyframes sheen {
@@ -81,7 +90,44 @@
       transform: translateX(-120%);
     }
     to {
-      transform: translateX(120%);
+      transform: translateX(140%);
+    }
+  }
+  @keyframes scan-line {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    8% {
+      opacity: 0.35;
+    }
+    22% {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+  }
+  @keyframes speck-drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+      opacity: 0.15;
+    }
+    50% {
+      transform: translate3d(var(--sx, 12px), var(--sy, -28px), 0);
+      opacity: 0.55;
+    }
+  }
+  @keyframes badge-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 0%, transparent);
+    }
+    50% {
+      box-shadow: 0 0 12px -2px color-mix(in oklab, currentColor 45%, transparent);
     }
   }
   @keyframes logo-breathe {
@@ -98,6 +144,8 @@
 @layer base {
   :root {
     color-scheme: dark;
+    --glow-x: 50%;
+    --glow-y: 12%;
   }
 
   html {
@@ -117,30 +165,36 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Cinematic wash behind the whole app. Two orbs drift; a grain film sits on top. */
+  /* Cinematic wash: drifting brand / violet / cyan orbs. */
   body::before {
     content: "";
     position: fixed;
-    inset: -20%;
+    inset: -25%;
     z-index: 0;
     pointer-events: none;
     background:
       radial-gradient(
-        50% 40% at 12% 0%,
-        color-mix(in oklab, var(--color-brand) 18%, transparent),
+        46% 38% at 10% 0%,
+        color-mix(in oklab, var(--color-brand) 26%, transparent),
         transparent 62%
       ),
       radial-gradient(
-        40% 35% at 92% 8%,
-        color-mix(in oklab, var(--color-viz-violet) 12%, transparent),
+        38% 32% at 90% 6%,
+        color-mix(in oklab, var(--color-viz-violet) 18%, transparent),
         transparent 58%
       ),
       radial-gradient(
-        35% 30% at 70% 100%,
-        color-mix(in oklab, var(--color-viz-cyan) 7%, transparent),
+        32% 28% at 72% 100%,
+        color-mix(in oklab, var(--color-viz-cyan) 12%, transparent),
         transparent 55%
+      ),
+      radial-gradient(
+        28% 24% at 28% 88%,
+        color-mix(in oklab, var(--color-viz-blue) 8%, transparent),
+        transparent 50%
       );
     animation: var(--animate-aurora);
+    will-change: transform;
   }
 
   body::after {
@@ -149,7 +203,7 @@
     inset: 0;
     z-index: 50;
     pointer-events: none;
-    opacity: 0.035;
+    opacity: 0.04;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -278,9 +332,227 @@
   .row-cursor-wash {
     background: linear-gradient(
       90deg,
-      color-mix(in oklab, var(--color-brand) 16%, transparent),
-      transparent 42%
+      color-mix(in oklab, var(--color-brand) 22%, transparent),
+      color-mix(in oklab, var(--color-viz-violet) 8%, transparent) 28%,
+      transparent 52%
     );
+  }
+
+  .atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .atmosphere-cursor {
+    position: fixed;
+    top: var(--glow-y);
+    left: var(--glow-x);
+    width: 520px;
+    height: 520px;
+    translate: -50% -50%;
+    border-radius: 999px;
+    background: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-brand) 16%, transparent),
+      color-mix(in oklab, var(--color-viz-violet) 8%, transparent) 38%,
+      transparent 68%
+    );
+    filter: blur(8px);
+    mix-blend-mode: screen;
+  }
+  .atmosphere-speck {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--color-fg);
+    opacity: 0.25;
+    animation: var(--animate-speck);
+  }
+  .atmosphere-speck:nth-child(2) {
+    top: 12%;
+    left: 18%;
+    --sx: 18px;
+    --sy: -36px;
+    animation-duration: 9s;
+  }
+  .atmosphere-speck:nth-child(3) {
+    top: 22%;
+    left: 72%;
+    background: var(--color-viz-cyan);
+    --sx: -22px;
+    --sy: 20px;
+    animation-duration: 13s;
+  }
+  .atmosphere-speck:nth-child(4) {
+    top: 48%;
+    left: 8%;
+    background: var(--color-brand);
+    --sx: 28px;
+    --sy: 14px;
+    animation-duration: 10s;
+  }
+  .atmosphere-speck:nth-child(5) {
+    top: 68%;
+    left: 86%;
+    background: var(--color-viz-violet);
+    --sx: -16px;
+    --sy: -24px;
+    animation-duration: 14s;
+  }
+  .atmosphere-speck:nth-child(6) {
+    top: 80%;
+    left: 32%;
+    --sx: 10px;
+    --sy: -40px;
+    animation-duration: 12s;
+  }
+  .atmosphere-speck:nth-child(7) {
+    top: 16%;
+    left: 44%;
+    background: var(--color-viz-amber);
+    --sx: -30px;
+    --sy: 18px;
+    animation-duration: 11s;
+  }
+  .atmosphere-speck:nth-child(8) {
+    top: 36%;
+    left: 58%;
+    --sx: 20px;
+    --sy: 32px;
+    animation-duration: 15s;
+  }
+  .atmosphere-speck:nth-child(9) {
+    top: 58%;
+    left: 24%;
+    background: var(--color-viz-blue);
+    --sx: -12px;
+    --sy: -22px;
+    animation-duration: 8s;
+  }
+  .atmosphere-speck:nth-child(10) {
+    top: 74%;
+    left: 64%;
+    --sx: 24px;
+    --sy: 10px;
+    animation-duration: 16s;
+  }
+  .atmosphere-speck:nth-child(11) {
+    top: 8%;
+    left: 90%;
+    background: var(--color-brand);
+    --sx: -20px;
+    --sy: 28px;
+    animation-duration: 10.5s;
+  }
+  .atmosphere-speck:nth-child(12) {
+    top: 92%;
+    left: 12%;
+    --sx: 16px;
+    --sy: -18px;
+    animation-duration: 13.5s;
+  }
+  .atmosphere-speck:nth-child(13) {
+    top: 42%;
+    left: 94%;
+    background: var(--color-viz-cyan);
+    --sx: -28px;
+    --sy: -12px;
+    animation-duration: 9.5s;
+  }
+  .atmosphere-speck:nth-child(14) {
+    top: 28%;
+    left: 6%;
+    --sx: 14px;
+    --sy: 26px;
+    animation-duration: 12.5s;
+  }
+  .atmosphere-speck:nth-child(15) {
+    top: 54%;
+    left: 48%;
+    background: var(--color-viz-violet);
+    --sx: 8px;
+    --sy: -30px;
+    animation-duration: 11.5s;
+  }
+
+  .header-shine {
+    position: relative;
+  }
+  .header-shine::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -1px;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--color-brand) 70%, transparent) 35%,
+      color-mix(in oklab, var(--color-viz-violet) 40%, transparent) 62%,
+      transparent
+    );
+    animation: header-shimmer 5.5s ease-in-out infinite;
+  }
+  @keyframes header-shimmer {
+    0%,
+    100% {
+      opacity: 0.35;
+      filter: hue-rotate(0deg);
+    }
+    50% {
+      opacity: 1;
+      filter: hue-rotate(18deg);
+    }
+  }
+
+  .scan-sweep {
+    position: relative;
+  }
+  .scan-sweep::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 18%;
+    pointer-events: none;
+    z-index: 2;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      color-mix(in oklab, var(--color-fg) 6%, transparent),
+      transparent
+    );
+    animation: var(--animate-scan);
+  }
+
+  .filter-glow {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.03),
+      0 20px 56px -36px color-mix(in oklab, var(--color-brand) 38%, transparent),
+      0 0 80px -48px color-mix(in oklab, var(--color-viz-violet) 35%, transparent);
+    animation: filter-breathe 7s ease-in-out infinite;
+  }
+  @keyframes filter-breathe {
+    0%,
+    100% {
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 20px 56px -36px color-mix(in oklab, var(--color-brand) 30%, transparent),
+        0 0 70px -50px color-mix(in oklab, var(--color-viz-violet) 22%, transparent);
+    }
+    50% {
+      box-shadow:
+        0 0 0 1px color-mix(in oklab, var(--color-brand) 18%, transparent),
+        0 24px 64px -32px color-mix(in oklab, var(--color-brand) 50%, transparent),
+        0 0 96px -40px color-mix(in oklab, var(--color-viz-violet) 40%, transparent);
+    }
+  }
+
+  .badge-live {
+    animation: var(--animate-badge-glow);
   }
 
   /* Edge fade for horizontally scrolling chip rails. */

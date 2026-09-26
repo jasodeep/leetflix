@@ -28,6 +28,9 @@ interface AlgorithmPlayerProps {
   slug: string;
   approaches: PlayerApproach[];
   inputs: InputField[];
+  /** When set, the parent owns the approach tab (solution + player stay in sync). */
+  approachId?: string;
+  onApproachChange?: (id: string) => void;
 }
 
 type TraceState =
@@ -40,12 +43,20 @@ type TraceState =
  * the selected approach against user-editable inputs, and hands the resulting
  * step list to a `PlayerStage` keyed per run.
  */
-export function AlgorithmPlayer({ slug, approaches, inputs }: AlgorithmPlayerProps) {
+export function AlgorithmPlayer({
+  slug,
+  approaches,
+  inputs,
+  approachId: controlledId,
+  onApproachChange,
+}: AlgorithmPlayerProps) {
   const [lang, setLang] = useLanguage();
   // Lead with the approach people came to see; brute force is a click away.
-  const [approachId, setApproachId] = useState(
+  const [internalId, setInternalId] = useState(
     () => (approaches.find((a) => a.kind === "optimal") ?? approaches[0]).id,
   );
+  const approachId = controlledId ?? internalId;
+  const setApproachId = onApproachChange ?? setInternalId;
   const approach = approaches.find((a) => a.id === approachId) ?? approaches[0];
 
   const [traces, setTraces] = useState<TraceModule | null>(null);
@@ -110,10 +121,14 @@ export function AlgorithmPlayer({ slug, approaches, inputs }: AlgorithmPlayerPro
   }, [traces, loadError, approach.id, applied]);
 
   return (
-    <div className="rounded-card border-border bg-surface border">
+    <div className="rounded-card border-border bg-surface/80 overflow-hidden border shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_24px_80px_-40px_rgba(229,9,20,0.28)]">
       <div className="border-border flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between">
         {approaches.length > 1 ? (
-          <div role="tablist" aria-label="Approach" className="flex flex-wrap gap-1.5">
+          <div
+            role="tablist"
+            aria-label="Approach"
+            className="border-border bg-surface-2/80 flex flex-wrap gap-1 rounded-lg border p-1"
+          >
             {approaches.map((a) => (
               <button
                 key={a.id}
@@ -122,10 +137,10 @@ export function AlgorithmPlayer({ slug, approaches, inputs }: AlgorithmPlayerPro
                 aria-selected={a.id === approach.id}
                 onClick={() => setApproachId(a.id)}
                 className={cn(
-                  "rounded-md border px-3 py-1.5 text-sm transition-colors",
+                  "rounded-md px-3 py-1.5 text-sm transition-colors",
                   a.id === approach.id
-                    ? "border-fg bg-fg text-bg"
-                    : "border-border text-fg-muted hover:border-border-strong hover:text-fg",
+                    ? "bg-fg/10 text-fg ring-border-strong ring-1"
+                    : "text-fg-muted hover:text-fg",
                 )}
               >
                 {a.title}
@@ -137,7 +152,7 @@ export function AlgorithmPlayer({ slug, approaches, inputs }: AlgorithmPlayerPro
             Approach: <span className="text-fg">{approach.title}</span>
           </p>
         )}
-        <LanguageToggle value={lang} onChange={setLang} />
+        <LanguageToggle value={lang} onChange={setLang} layoutId="lang-player" />
       </div>
 
       <div className="border-border border-b p-4">

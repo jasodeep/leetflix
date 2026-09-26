@@ -33,6 +33,16 @@ const METHOD_FAMILY: Partial<Record<Topic, FamilyId>> = {
   Recursion: "dp",
   Backtracking: "dp",
   "Hash Table": "hashing",
+  Greedy: "scan",
+  Sorting: "scan",
+  "Prefix Sum": "scan",
+  Math: "scan",
+  "Bit Manipulation": "scan",
+  Design: "scan",
+  Heap: "scan",
+  Intervals: "pointers",
+  "Union Find": "walk",
+  "Divide and Conquer": "bsearch",
 };
 
 /** Prefer the most specific method tag; fall back to a linear scan. */
@@ -45,6 +55,17 @@ export const familyOf = (topics: readonly Topic[]): FamilyId => {
     if (isMethod(t)) return "scan";
   }
   return "scan";
+};
+
+/** LeetCode-style method name from a slug: `two-sum` → `twoSum`, `3sum` → `solve3sum`. */
+export const slugToFn = (slug: string): string => {
+  const parts = slug.split("-").filter(Boolean);
+  return parts
+    .map((part, i) => {
+      if (i === 0) return /^\d/.test(part) ? `solve${part}` : part;
+      return part.charAt(0).toUpperCase() + part.slice(1);
+    })
+    .join("");
 };
 
 export const FAMILY_LABEL: Record<FamilyId, string> = {

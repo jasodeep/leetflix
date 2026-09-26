@@ -39,7 +39,7 @@ export function SolutionCode({
           {title ?? `Solution.${lang === "python" ? "py" : "go"}`}
         </span>
         <div className="ml-auto flex items-center gap-2">
-          <LanguageToggle value={lang} onChange={setLang} />
+          <LanguageToggle value={lang} onChange={setLang} layoutId="lang-solution" />
           <button
             type="button"
             onClick={copy}

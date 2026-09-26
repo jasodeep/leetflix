@@ -15,7 +15,7 @@ const GithubIcon = ({ className }: { className?: string }) => (
 
 export function Header() {
   return (
-    <header className="border-border/60 bg-bg/70 supports-[backdrop-filter]:bg-bg/45 sticky top-0 z-40 border-b backdrop-blur-xl">
+    <header className="header-shine border-border/60 bg-bg/70 supports-[backdrop-filter]:bg-bg/45 sticky top-0 z-40 border-b backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"

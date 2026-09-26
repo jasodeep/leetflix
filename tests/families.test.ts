@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import { catalog } from "@/content/catalog";
-import { FAMILY_IDS, familyOf, familyTraces, materialize } from "@/content/families";
+import { FAMILY_IDS, familyOf, familyTraces, materialize, slugToFn } from "@/content/families";
+import { getProblem } from "@/lib/get-problem";
+import { loadTraces } from "@/content/traces";
+import { catalogItems } from "@/lib/problems";
+import { problems } from "@/content/problems";
+import { SOLVED_SLUGS } from "@/content/solvers/pick";
 import { FAMILY_APPROACH, FAMILY_INPUTS } from "@/content/families/solutions";
 import { defaultRawInputs, parseInputs } from "@/lib/inputs";
 import { resolveMarkers } from "@/lib/markers";
@@ -13,6 +18,36 @@ describe("families", () => {
     for (const row of catalog) {
       expect(FAMILY_IDS, row.slug).toContain(familyOf(row.topics));
     }
+  });
+
+  it("solves every free problem and skips locked ones", () => {
+    const free = catalog.filter((row) => !row.premium);
+    const authored = new Set(problems.map((p) => p.slug));
+    expect(free.length).toBe(3276);
+    expect(catalogItems.filter((c) => c.available).length).toBe(3276);
+    expect(catalog.filter((row) => row.premium).length).toBe(784);
+
+    for (const row of catalog) {
+      const problem = getProblem(row.slug);
+      if (row.premium) {
+        expect(problem, row.slug).toBeUndefined();
+        continue;
+      }
+      expect(problem, row.slug).toBeDefined();
+      expect(
+        problem!.approaches.some((a) => a.traceable),
+        row.slug,
+      ).toBe(true);
+      if (authored.has(row.slug) || SOLVED_SLUGS.has(row.slug)) continue;
+      const fn = slugToFn(row.slug);
+      expect(problem!.approaches[0]!.code.python.source, row.slug).toContain(`def ${fn}(`);
+      expect(problem!.approaches[0]!.code.go.source, row.slug).toContain(`func ${fn}(`);
+    }
+  });
+
+  it("family-only slugs still load a trace", async () => {
+    const mod = await loadTraces("powx-n");
+    expect(Object.keys(mod).length).toBeGreaterThan(0);
   });
 
   it("materializes the same shape as a hand-authored problem", () => {
