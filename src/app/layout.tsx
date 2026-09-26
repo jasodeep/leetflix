@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Inter, JetBrains_Mono } from "next/font/google";
 
 import { Atmosphere } from "@/components/layout/Atmosphere";
+import { BootCurtain } from "@/components/layout/BootCurtain";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -91,6 +92,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <Atmosphere />
+        <BootCurtain />
         <JsonLd data={jsonLdOrg()} />
         <JsonLd data={jsonLdWebsite()} />
         <JsonLd data={jsonLdApp()} />

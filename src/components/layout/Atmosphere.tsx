@@ -2,7 +2,9 @@
 
 import { useEffect } from "react";
 
-/** Site-wide cursor halo + drifting specks. Pure decoration; layout is unchanged. */
+import { Doodles } from "./Doodles";
+
+/** Site-wide cursor halo, mesh, and faint line doodles. */
 export function Atmosphere() {
   useEffect(() => {
     const root = document.documentElement;
@@ -34,11 +36,18 @@ export function Atmosphere() {
   }, []);
 
   return (
-    <div className="atmosphere scan-sweep" aria-hidden>
-      <div className="atmosphere-cursor" />
-      {Array.from({ length: 14 }, (_, i) => (
-        <span key={i} className="atmosphere-speck" />
-      ))}
-    </div>
+    <>
+      <div className="atmosphere scan-sweep" aria-hidden>
+        <div className="atmosphere-mesh" />
+        <div className="atmosphere-orb atmosphere-orb-a" />
+        <div className="atmosphere-orb atmosphere-orb-b" />
+        <div className="atmosphere-orb atmosphere-orb-c" />
+        <div className="atmosphere-cursor" />
+        {Array.from({ length: 14 }, (_, i) => (
+          <span key={i} className="atmosphere-speck" />
+        ))}
+      </div>
+      <Doodles />
+    </>
   );
 }
