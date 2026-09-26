@@ -4,3 +4,5 @@ node_modules
 package-lock.json
 next-env.d.ts
 AGENTS.md
+# Compact dump from `npm run sync:leetcode` — prettier would explode 4k rows.
+src/content/leetcode.json
