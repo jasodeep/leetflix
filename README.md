@@ -1,62 +1,45 @@
 <div align="center">
 
-<img src="docs/brand/logo.png" alt="Leetflix — LeetCode solutions and algorithm visualizations" width="520" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=e50914&height=120&section=header&animation=twinkling&fontAlignY=35" width="100%" alt="" />
 
-`WATCH.CODE.REPEAT_`
-
-**LeetCode solutions, algorithm visualizations, and coding interview prep.**  
-The full LeetCode catalogue — explained **Python** and **Go** solutions, step-by-step
-DSA animations, static site, zero backend.
-
-Live: **[jasodeep.github.io/leetflix](https://jasodeep.github.io/leetflix/)** ·
-Source: **[github.com/jasodeep/leetflix](https://github.com/jasodeep/leetflix)**
+<img src="docs/brand/logo.png" alt="Leetflix — LeetCode solutions and algorithm visualizations" width="560" />
 
 <br/>
 
-[![▶ watch now](https://img.shields.io/badge/▶_WATCH_NOW-jasodeep.github.io%2Fleetflix-e50914?style=for-the-badge&labelColor=0a0a0b)](https://jasodeep.github.io/leetflix/)
-[![source](https://img.shields.io/badge/git-jasodeep%2Fleetflix-111113?style=for-the-badge&labelColor=0a0a0b&logo=github)](https://github.com/jasodeep/leetflix)
+[![typing](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&pause=1400&color=E50914&center=true&vCenter=true&width=720&height=36&repeat=true&lines=Watch+the+algorithm+move.;LeetCode+solutions+in+Python+%2B+Go.;Step-by-step+animations.;Interview+prep%2C+visually.)](https://jasodeep.github.io/leetflix/)
 
-<br/>
+**LeetCode solutions · algorithm visualizations · coding interview prep**
 
-[![ci](https://img.shields.io/github/actions/workflow/status/jasodeep/leetflix/ci.yml?style=flat-square&label=ci&labelColor=111113)](https://github.com/jasodeep/leetflix/actions/workflows/ci.yml)
-[![pages](https://img.shields.io/github/actions/workflow/status/jasodeep/leetflix/pages.yml?style=flat-square&label=pages&labelColor=111113)](https://github.com/jasodeep/leetflix/actions/workflows/pages.yml)
-[![license](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square&labelColor=111113)](LICENSE)
-[![next](https://img.shields.io/badge/next-16_static_export-black?style=flat-square&labelColor=111113)](https://nextjs.org/)
-[![ts](https://img.shields.io/badge/typescript-strict-3178C6?style=flat-square&labelColor=111113)](https://www.typescriptlang.org/)
-[![node](https://img.shields.io/badge/node-%3E%3D20.19-22c55e?style=flat-square&labelColor=111113)](#local-setup)
+Pick a problem. Read a short explanation. Play the animation. Switch between Python and Go.
 
-Topics:
-[leetcode](https://github.com/topics/leetcode) ·
-[algorithms](https://github.com/topics/algorithms) ·
-[interview-prep](https://github.com/topics/interview-prep) ·
-[data-structures](https://github.com/topics/data-structures) ·
-[visualization](https://github.com/topics/visualization) ·
-[python](https://github.com/topics/python) ·
-[golang](https://github.com/topics/golang) ·
-[dsa](https://github.com/topics/dsa)
+**4,060** LeetCode problems indexed · **3,276** free ones you can play · **Python + Go** on every free page
 
-```
-┌──────────┬───────────┬──────────┬────────────┐
-│ 4060 LC  │ 3276 free │ python   │ go + viz   │
-└──────────┴───────────┴──────────┴────────────┘
-```
+[![Live](https://img.shields.io/badge/live-jasodeep.github.io%2Fleetflix-e50914?style=flat-square&labelColor=0a0a0b)](https://jasodeep.github.io/leetflix/) [![ci](https://img.shields.io/github/actions/workflow/status/jasodeep/leetflix/ci.yml?style=flat-square&label=ci&labelColor=111113)](https://github.com/jasodeep/leetflix/actions/workflows/ci.yml) [![license](https://img.shields.io/github/license/jasodeep/leetflix?style=flat-square&labelColor=111113&color=22c55e)](LICENSE) [![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white&labelColor=111113)](https://jasodeep.github.io/leetflix/) [![Go](https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white&labelColor=111113)](https://jasodeep.github.io/leetflix/) [![stars](https://img.shields.io/github/stars/jasodeep/leetflix?style=flat-square&labelColor=111113&color=e50914)](https://github.com/jasodeep/leetflix/stargazers)
 
 </div>
 
 ---
 
-## `>_ now_playing`
+## What you get
 
-the player is the point. a trace records every meaningful op — arrays, maps,
-stacks, lists, grids, water columns — then you **scrub it like a film**. the
-red line is the instruction pointer.
+1. **A list of every LeetCode problem** — search, filter by Easy / Medium / Hard, type, or method.
+2. **A solution page** — the idea in plain language, then Python and Go.
+3. **An animation** — play, pause, and step through the algorithm. Change the input and run it again.
+
+Free problems are playable here. Locked / premium problems send you to LeetCode.
+
+---
+
+## Watch a solution
+
+Each animation is the algorithm, not a slideshow. The red line follows the current step.
 
 <p align="center">
   <a href="https://jasodeep.github.io/leetflix/problems/two-sum/">
     <img src="docs/media/two-sum.gif" alt="Two Sum — hash map walkthrough" width="860" />
   </a>
   <br/>
-  <sup><code>001 · TWO SUM</code> &nbsp; one-pass hash map &nbsp;·&nbsp; <code>O(n)</code> &nbsp;·&nbsp; python ⇄ go</sup>
+  <sup><a href="https://jasodeep.github.io/leetflix/problems/two-sum/">1. Two Sum</a> — one-pass hash map · O(n) · Python and Go</sup>
 </p>
 
 <p align="center">
@@ -68,7 +51,11 @@ red line is the instruction pointer.
     <img src="docs/media/stack.gif" alt="Valid Parentheses — stack" width="420" />
   </a>
   <br/>
-  <sup><code>042 · RAIN</code> two pointers &nbsp;&nbsp;|&nbsp;&nbsp; <code>020 · PARENS</code> stack machine</sup>
+  <sup>
+    <a href="https://jasodeep.github.io/leetflix/problems/trapping-rain-water/">42. Trapping Rain Water</a>
+    &nbsp;·&nbsp;
+    <a href="https://jasodeep.github.io/leetflix/problems/valid-parentheses/">20. Valid Parentheses</a>
+  </sup>
 </p>
 
 <p align="center">
@@ -80,17 +67,26 @@ red line is the instruction pointer.
     <img src="docs/media/list.gif" alt="Reverse Linked List — three pointers" width="420" />
   </a>
   <br/>
-  <sup><code>200 · ISLANDS</code> sink-by-DFS &nbsp;&nbsp;|&nbsp;&nbsp; <code>206 · LIST</code> prev / curr / next</sup>
+  <sup>
+    <a href="https://jasodeep.github.io/leetflix/problems/number-of-islands/">200. Number of Islands</a>
+    &nbsp;·&nbsp;
+    <a href="https://jasodeep.github.io/leetflix/problems/reverse-linked-list/">206. Reverse Linked List</a>
+  </sup>
 </p>
 
-edit the input. hit **run**. `space` plays, `←` `→` steps, `home` / `end` skip.
+| Key | What it does |
+| :-- | :----------- |
+| Space | Play or pause |
+| ← → | Step backward or forward |
+| Home / End | Jump to the first or last step |
+| / | Focus search on the problem list |
+| J / K | Move down or up the list |
 
 ---
 
-## `>_ ls /`
+## Browse the catalogue
 
-home is a LeetCode-style problem list. every **free** question has Python, Go,
-and an animated walkthrough. premium / locked rows deep-link to LeetCode.
+The home page is a table, like LeetCode. Filters stay in the URL, so you can share a view.
 
 <p align="center">
   <a href="https://jasodeep.github.io/leetflix/">
@@ -98,48 +94,40 @@ and an animated walkthrough. premium / locked rows deep-link to LeetCode.
   </a>
 </p>
 
-```
-GET /?q=water&difficulty=Hard&available=1
+Every problem page has three parts:
 
-#  /     search          j k     move cursor
-#  ↵     open episode    esc     blur / clear
-#  filters live in the query string — share the URL
-```
-
-| tape             | payload                                                                       |
-| :--------------- | :---------------------------------------------------------------------------- |
-| **the brief**    | statement, constraints, worked examples — same viz the player uses            |
-| **the cut**      | brute vs optimal, complexity, intuition, **python** and **go** side by side   |
-| **the playback** | pointer-accurate animation; language toggle persists across the whole episode |
+| Section | What you see |
+| :------ | :----------- |
+| **Problem** | Statement, constraints, and examples |
+| **Solution** | Why it works, then Python and Go (tabs if there is more than one approach) |
+| **Walkthrough** | The interactive animation — edit the input and press Run |
 
 ---
 
-## `>_ boot --local`
+## Run it on your machine
 
-no docker. no `.env`. no api key. node **≥ 20.19** (`.nvmrc` → **24**).
+<a id="run-it-on-your-machine"></a>
+
+You need **Node 20.19+**. No Docker, no `.env`, no API key.
 
 ```bash
 git clone https://github.com/jasodeep/leetflix.git
 cd leetflix
 npm install
-npm run dev          # http://localhost:3000
+npm run dev
 ```
 
-```bash
-npm run check        # lint + tsc + vitest + prettier     (what CI runs)
-npm run build        # prerender every route → out/
-npm start            # serve the export, pages-style
-```
+Open [http://localhost:3000](http://localhost:3000).
 
-| bin             | tty                             |
-| :-------------- | :------------------------------ |
-| `npm run dev`   | next 16, hot reload             |
-| `npm run check` | the merge gate                  |
-| `npm run build` | static site, no node at runtime |
-| `npm start`     | `npx serve out`                 |
-| `npm test`      | markers, traces, table query    |
+| Command | What it does |
+| :------ | :----------- |
+| `npm run dev` | Local site with live reload |
+| `npm test` | Unit tests |
+| `npm run check` | Lint, types, tests, and formatting — same as CI |
+| `npm run build` | Static site in `out/` |
+| `npm start` | Serve that export |
 
-mimic production (project pages prefix):
+To match GitHub Pages locally:
 
 ```bash
 NEXT_PUBLIC_SITE_URL=https://jasodeep.github.io/leetflix \
@@ -149,73 +137,31 @@ npm run build && npm start
 
 ---
 
-## `>_ uname -a`
-
-```
-next@16   react@19   typescript@strict   tailwind@4
-shiki     @ build-time only    (client never ships a highlighter)
-motion    springs on every panel
-vitest    content integrity — a bad marker fails the build
-output    export → orphan branch `release` → github pages
-```
-
-```
-browse ──► /problems/<slug> ──► player
-  table        statement            viz snapshot
-  4060 rows    py / go              instruction pointer
-  3276 free    insights             space / ← → / scrub
-```
-
 <details>
-<summary><code>man leetflix</code> — traces, markers, how to air a new episode</summary>
+<summary>Add a problem (for contributors)</summary>
 
 <br/>
 
-```
-src/
-  app/                  /  and  /problems/[slug]     all prerendered
-  components/player/    AlgorithmPlayer → viz + transport + cursor
-  components/viz/       array · bars · map · stack · list · grid · vars
-  content/catalog.ts    150 rows
-  content/problems/     authored episodes
-  content/traces/       lazy step recorders
-  lib/catalog-query.ts  URL ⇄ filter / sort / page    (no react)
-  lib/markers.ts        unique substring → line number
-```
+1. Make sure the row exists in the catalogue (it usually already does).
+2. Add `src/content/problems/<slug>.ts` with Python and Go.
+3. Add a trace in `src/content/traces/<slug>.ts` for each animated approach.
+4. Register both files in their `index.ts`.
+5. Run `npm test`.
 
-a **trace** is a function that runs the algorithm and records
-`{ marker, note, panels }` after each op.
-
-- `panels` are data — cloned, testable, animated with layout springs
-- `marker` is a unique substring of the source, resolved at build time
-- missing or ambiguous marker → build red, tests red
-
-**air an episode**
-
-1. row in `src/content/catalog.ts` if it is not already there
-2. `src/content/problems/<slug>.ts` — both languages, `py` / `go` templates
-3. trace in `src/content/traces/<slug>.ts` for every `traceable: true` approach
-4. register in `problems/index.ts` + `traces/index.ts`
-5. `npm test`
-
-routes, ▶ status, the difficulty ring and the sitemap fall out of the registry.
+A **trace** records `{ marker, note, panels }` after each step. A missing marker fails the build.
 
 </details>
 
 <details>
-<summary><code>make release</code> — pages from the orphan <code>release</code> branch</summary>
+<summary>How the site is published</summary>
 
 <br/>
 
-push `main` → [pages.yml](.github/workflows/pages.yml) → quality gates →
-`out/` orphan-committed to `release`.
+Push to `main` runs [pages.yml](.github/workflows/pages.yml). After checks pass, the static `out/` folder is pushed to the `release` branch.
 
-1. Actions → Workflow permissions → **Read and write**
-2. Pages → Deploy from a branch → **`release` / (root)**
+In the repo: **Settings → Pages → Deploy from a branch → `release` / (root)**.
 
-live: **https://jasodeep.github.io/leetflix/**
-
-optional vars for a custom domain: `SITE_URL`, `BASE_PATH`, `PAGES_CNAME`.
+Live site: **https://jasodeep.github.io/leetflix/**
 
 </details>
 
@@ -227,14 +173,11 @@ optional vars for a custom domain: `SITE_URL`, `BASE_PATH`, `PAGES_CNAME`.
 
 <br/>
 
-`parody // !netflix && !leetcode`
+Parody project. Not affiliated with Netflix or LeetCode.  
+Problem statements belong to their owners.
 
-problem statements © their respective owners
+[**Open Leetflix →**](https://jasodeep.github.io/leetflix/)
 
-<br/>
-
-**LeetCode · DSA · interview prep · algorithm visualization**
-
-[**▶ jasodeep.github.io/leetflix**](https://jasodeep.github.io/leetflix/)
+<img src="https://capsule-render.vercel.app/api?type=waving&color=e50914&height=90&section=footer&animation=twinkling" width="100%" alt="" />
 
 </div>
